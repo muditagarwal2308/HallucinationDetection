@@ -314,6 +314,7 @@ The largest weights are evidence support (−2.08: supported answers are safe) a
 ## 6. Results: real-model pilot
 
 <!-- REAL_RESULTS -->
+> **In progress.** The real-model pilot (Qwen2.5-1.5B-Instruct, PopQA, live Wikipedia retrieval, DeBERTa-large-MNLI, K = 10) is running; its per-question records are cached in `results/real/` and this section will be completed when the run finishes.
 
 ---
 

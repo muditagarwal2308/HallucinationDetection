@@ -282,10 +282,12 @@ These results confirm the proposal's central hypothesis.
 ### 6.4 DeBERTa-large-MNLI (no lexicon tuning)
 
 <!-- DEBERTA_RESULTS -->
+> **In progress.** The DeBERTa-large-MNLI run of the benchmark is scheduled; results will be added here.
 
 ### 6.5 Repair and abstention
 
 <!-- REPAIR_RESULTS -->
+> **In progress.** Repair and abstention outcomes will be refreshed after the final benchmark run (see `results/gita/benchmark_lexical.json` for the current numbers).
 
 ---
 
