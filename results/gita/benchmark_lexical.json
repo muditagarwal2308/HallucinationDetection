@@ -1,0 +1,788 @@
+{
+  "nli": "lexical",
+  "search_k": 12,
+  "support_threshold": 0.1,
+  "answer_level_threshold": 0.35,
+  "tuning": {
+    "0.1": {
+      "n": 262,
+      "positives": 209,
+      "auroc": 0.9823056784327887,
+      "auprc": 0.9934837389905153,
+      "precision": 0.9952153110047847,
+      "recall": 0.9952153110047847,
+      "f1": 0.9952153110047847,
+      "false_positive_rate": 0.018867924528301886,
+      "accuracy": 0.9923664122137404,
+      "per_type": {
+        "fabricated_citation": {
+          "n": 39,
+          "recall": 1.0,
+          "type_accuracy": 1.0
+        },
+        "misattributed_citation": {
+          "n": 39,
+          "recall": 1.0,
+          "type_accuracy": 1.0
+        },
+        "misquotation": {
+          "n": 39,
+          "recall": 1.0,
+          "type_accuracy": 0.8974358974358975
+        },
+        "wrong_speaker": {
+          "n": 39,
+          "recall": 0.9743589743589743,
+          "type_accuracy": 0.9743589743589743
+        },
+        "unsupported_claim": {
+          "n": 39,
+          "recall": 1.0,
+          "type_accuracy": 1.0
+        },
+        "false_premise_accepted": {
+          "n": 9,
+          "recall": 1.0,
+          "type_accuracy": 0.8888888888888888
+        },
+        "out_of_scope_answered": {
+          "n": 5,
+          "recall": 1.0,
+          "type_accuracy": 0.8
+        }
+      }
+    },
+    "0.2": {
+      "n": 262,
+      "positives": 209,
+      "auroc": 0.9823056784327887,
+      "auprc": 0.9934837389905153,
+      "precision": 0.9952153110047847,
+      "recall": 0.9952153110047847,
+      "f1": 0.9952153110047847,
+      "false_positive_rate": 0.018867924528301886,
+      "accuracy": 0.9923664122137404,
+      "per_type": {
+        "fabricated_citation": {
+          "n": 39,
+          "recall": 1.0,
+          "type_accuracy": 1.0
+        },
+        "misattributed_citation": {
+          "n": 39,
+          "recall": 1.0,
+          "type_accuracy": 1.0
+        },
+        "misquotation": {
+          "n": 39,
+          "recall": 1.0,
+          "type_accuracy": 0.8974358974358975
+        },
+        "wrong_speaker": {
+          "n": 39,
+          "recall": 0.9743589743589743,
+          "type_accuracy": 0.9743589743589743
+        },
+        "unsupported_claim": {
+          "n": 39,
+          "recall": 1.0,
+          "type_accuracy": 1.0
+        },
+        "false_premise_accepted": {
+          "n": 9,
+          "recall": 1.0,
+          "type_accuracy": 1.0
+        },
+        "out_of_scope_answered": {
+          "n": 5,
+          "recall": 1.0,
+          "type_accuracy": 0.8
+        }
+      }
+    },
+    "0.3": {
+      "n": 262,
+      "positives": 209,
+      "auroc": 0.9823056784327887,
+      "auprc": 0.9934837389905153,
+      "precision": 0.9952153110047847,
+      "recall": 0.9952153110047847,
+      "f1": 0.9952153110047847,
+      "false_positive_rate": 0.018867924528301886,
+      "accuracy": 0.9923664122137404,
+      "per_type": {
+        "fabricated_citation": {
+          "n": 39,
+          "recall": 1.0,
+          "type_accuracy": 1.0
+        },
+        "misattributed_citation": {
+          "n": 39,
+          "recall": 1.0,
+          "type_accuracy": 1.0
+        },
+        "misquotation": {
+          "n": 39,
+          "recall": 1.0,
+          "type_accuracy": 0.8974358974358975
+        },
+        "wrong_speaker": {
+          "n": 39,
+          "recall": 0.9743589743589743,
+          "type_accuracy": 0.9743589743589743
+        },
+        "unsupported_claim": {
+          "n": 39,
+          "recall": 1.0,
+          "type_accuracy": 1.0
+        },
+        "false_premise_accepted": {
+          "n": 9,
+          "recall": 1.0,
+          "type_accuracy": 1.0
+        },
+        "out_of_scope_answered": {
+          "n": 5,
+          "recall": 1.0,
+          "type_accuracy": 0.8
+        }
+      }
+    },
+    "0.4": {
+      "n": 262,
+      "positives": 209,
+      "auroc": 0.9823056784327887,
+      "auprc": 0.9934837389905153,
+      "precision": 0.9952153110047847,
+      "recall": 0.9952153110047847,
+      "f1": 0.9952153110047847,
+      "false_positive_rate": 0.018867924528301886,
+      "accuracy": 0.9923664122137404,
+      "per_type": {
+        "fabricated_citation": {
+          "n": 39,
+          "recall": 1.0,
+          "type_accuracy": 1.0
+        },
+        "misattributed_citation": {
+          "n": 39,
+          "recall": 1.0,
+          "type_accuracy": 1.0
+        },
+        "misquotation": {
+          "n": 39,
+          "recall": 1.0,
+          "type_accuracy": 0.8974358974358975
+        },
+        "wrong_speaker": {
+          "n": 39,
+          "recall": 0.9743589743589743,
+          "type_accuracy": 0.9743589743589743
+        },
+        "unsupported_claim": {
+          "n": 39,
+          "recall": 1.0,
+          "type_accuracy": 1.0
+        },
+        "false_premise_accepted": {
+          "n": 9,
+          "recall": 1.0,
+          "type_accuracy": 1.0
+        },
+        "out_of_scope_answered": {
+          "n": 5,
+          "recall": 1.0,
+          "type_accuracy": 0.8
+        }
+      }
+    },
+    "0.5": {
+      "n": 262,
+      "positives": 209,
+      "auroc": 0.9622190123679697,
+      "auprc": 0.9871190265954685,
+      "precision": 0.9811320754716981,
+      "recall": 0.9952153110047847,
+      "f1": 0.9881235154394298,
+      "false_positive_rate": 0.07547169811320754,
+      "accuracy": 0.9809160305343512,
+      "per_type": {
+        "fabricated_citation": {
+          "n": 39,
+          "recall": 1.0,
+          "type_accuracy": 1.0
+        },
+        "misattributed_citation": {
+          "n": 39,
+          "recall": 1.0,
+          "type_accuracy": 0.9230769230769231
+        },
+        "misquotation": {
+          "n": 39,
+          "recall": 1.0,
+          "type_accuracy": 0.8974358974358975
+        },
+        "wrong_speaker": {
+          "n": 39,
+          "recall": 0.9743589743589743,
+          "type_accuracy": 0.9743589743589743
+        },
+        "unsupported_claim": {
+          "n": 39,
+          "recall": 1.0,
+          "type_accuracy": 1.0
+        },
+        "false_premise_accepted": {
+          "n": 9,
+          "recall": 1.0,
+          "type_accuracy": 1.0
+        },
+        "out_of_scope_answered": {
+          "n": 5,
+          "recall": 1.0,
+          "type_accuracy": 0.8
+        }
+      }
+    },
+    "0.6": {
+      "n": 262,
+      "positives": 209,
+      "auroc": 0.9618127651891306,
+      "auprc": 0.9869169696548618,
+      "precision": 0.9765258215962441,
+      "recall": 0.9952153110047847,
+      "f1": 0.985781990521327,
+      "false_positive_rate": 0.09433962264150944,
+      "accuracy": 0.9770992366412213,
+      "per_type": {
+        "fabricated_citation": {
+          "n": 39,
+          "recall": 1.0,
+          "type_accuracy": 1.0
+        },
+        "misattributed_citation": {
+          "n": 39,
+          "recall": 1.0,
+          "type_accuracy": 0.8974358974358975
+        },
+        "misquotation": {
+          "n": 39,
+          "recall": 1.0,
+          "type_accuracy": 0.8974358974358975
+        },
+        "wrong_speaker": {
+          "n": 39,
+          "recall": 0.9743589743589743,
+          "type_accuracy": 0.9743589743589743
+        },
+        "unsupported_claim": {
+          "n": 39,
+          "recall": 1.0,
+          "type_accuracy": 1.0
+        },
+        "false_premise_accepted": {
+          "n": 9,
+          "recall": 1.0,
+          "type_accuracy": 1.0
+        },
+        "out_of_scope_answered": {
+          "n": 5,
+          "recall": 1.0,
+          "type_accuracy": 0.8
+        }
+      }
+    }
+  },
+  "detectors": {
+    "citation_existence": {
+      "n": 262,
+      "positives": 209,
+      "auroc": 0.579218199873612,
+      "auprc": 0.8803125166560718,
+      "precision": 0.9534883720930233,
+      "recall": 0.19617224880382775,
+      "f1": 0.3253968253968254,
+      "false_positive_rate": 0.03773584905660377,
+      "accuracy": 0.3511450381679389,
+      "per_type": {
+        "fabricated_citation": {
+          "n": 39,
+          "recall": 1.0,
+          "type_accuracy": 1.0
+        },
+        "misattributed_citation": {
+          "n": 39,
+          "recall": 0.0,
+          "type_accuracy": 0.0
+        },
+        "misquotation": {
+          "n": 39,
+          "recall": 0.0,
+          "type_accuracy": 0.0
+        },
+        "wrong_speaker": {
+          "n": 39,
+          "recall": 0.0,
+          "type_accuracy": 0.0
+        },
+        "unsupported_claim": {
+          "n": 39,
+          "recall": 0.0,
+          "type_accuracy": 0.0
+        },
+        "false_premise_accepted": {
+          "n": 9,
+          "recall": 0.2222222222222222,
+          "type_accuracy": 0.0
+        },
+        "out_of_scope_answered": {
+          "n": 5,
+          "recall": 0.0,
+          "type_accuracy": 0.0
+        }
+      }
+    },
+    "answer_level_nli": {
+      "n": 262,
+      "positives": 209,
+      "auroc": 0.6160964159971112,
+      "auprc": 0.8686730925110608,
+      "precision": 0.8375,
+      "recall": 0.6411483253588517,
+      "f1": 0.7262872628726288,
+      "false_positive_rate": 0.49056603773584906,
+      "accuracy": 0.6145038167938931,
+      "per_type": {
+        "fabricated_citation": {
+          "n": 39,
+          "recall": 0.358974358974359,
+          "type_accuracy": 0.0
+        },
+        "misattributed_citation": {
+          "n": 39,
+          "recall": 0.358974358974359,
+          "type_accuracy": 0.0
+        },
+        "misquotation": {
+          "n": 39,
+          "recall": 1.0,
+          "type_accuracy": 0.0
+        },
+        "wrong_speaker": {
+          "n": 39,
+          "recall": 0.358974358974359,
+          "type_accuracy": 0.0
+        },
+        "unsupported_claim": {
+          "n": 39,
+          "recall": 1.0,
+          "type_accuracy": 1.0
+        },
+        "false_premise_accepted": {
+          "n": 9,
+          "recall": 1.0,
+          "type_accuracy": 0.0
+        },
+        "out_of_scope_answered": {
+          "n": 5,
+          "recall": 1.0,
+          "type_accuracy": 0.0
+        }
+      }
+    },
+    "vghd": {
+      "n": 262,
+      "positives": 209,
+      "auroc": 0.9909722849146881,
+      "auprc": 0.9972131380583309,
+      "precision": 0.9951456310679612,
+      "recall": 0.9808612440191388,
+      "f1": 0.9879518072289156,
+      "false_positive_rate": 0.018867924528301886,
+      "accuracy": 0.9809160305343512,
+      "per_type": {
+        "fabricated_citation": {
+          "n": 39,
+          "recall": 1.0,
+          "type_accuracy": 1.0
+        },
+        "misattributed_citation": {
+          "n": 39,
+          "recall": 1.0,
+          "type_accuracy": 1.0
+        },
+        "misquotation": {
+          "n": 39,
+          "recall": 0.9743589743589743,
+          "type_accuracy": 0.9487179487179487
+        },
+        "wrong_speaker": {
+          "n": 39,
+          "recall": 1.0,
+          "type_accuracy": 1.0
+        },
+        "unsupported_claim": {
+          "n": 39,
+          "recall": 1.0,
+          "type_accuracy": 1.0
+        },
+        "false_premise_accepted": {
+          "n": 9,
+          "recall": 0.6666666666666666,
+          "type_accuracy": 0.3333333333333333
+        },
+        "out_of_scope_answered": {
+          "n": 5,
+          "recall": 1.0,
+          "type_accuracy": 1.0
+        }
+      }
+    },
+    "vghd_no_premise": {
+      "n": 262,
+      "positives": 209,
+      "auroc": 0.875688363275255,
+      "auprc": 0.949023109430382,
+      "precision": 0.9579439252336449,
+      "recall": 0.9808612440191388,
+      "f1": 0.9692671394799054,
+      "false_positive_rate": 0.16981132075471697,
+      "accuracy": 0.950381679389313,
+      "per_type": {
+        "fabricated_citation": {
+          "n": 39,
+          "recall": 1.0,
+          "type_accuracy": 1.0
+        },
+        "misattributed_citation": {
+          "n": 39,
+          "recall": 1.0,
+          "type_accuracy": 1.0
+        },
+        "misquotation": {
+          "n": 39,
+          "recall": 0.9743589743589743,
+          "type_accuracy": 0.9487179487179487
+        },
+        "wrong_speaker": {
+          "n": 39,
+          "recall": 1.0,
+          "type_accuracy": 1.0
+        },
+        "unsupported_claim": {
+          "n": 39,
+          "recall": 1.0,
+          "type_accuracy": 1.0
+        },
+        "false_premise_accepted": {
+          "n": 9,
+          "recall": 0.6666666666666666,
+          "type_accuracy": 0.0
+        },
+        "out_of_scope_answered": {
+          "n": 5,
+          "recall": 1.0,
+          "type_accuracy": 0.0
+        }
+      }
+    },
+    "vghd_no_quotes": {
+      "n": 262,
+      "positives": 209,
+      "auroc": 0.9784237609461045,
+      "auprc": 0.9924496719113294,
+      "precision": 0.9854368932038835,
+      "recall": 0.9712918660287081,
+      "f1": 0.9783132530120482,
+      "false_positive_rate": 0.05660377358490566,
+      "accuracy": 0.9656488549618321,
+      "per_type": {
+        "fabricated_citation": {
+          "n": 39,
+          "recall": 1.0,
+          "type_accuracy": 1.0
+        },
+        "misattributed_citation": {
+          "n": 39,
+          "recall": 1.0,
+          "type_accuracy": 0.9487179487179487
+        },
+        "misquotation": {
+          "n": 39,
+          "recall": 0.9230769230769231,
+          "type_accuracy": 0.0
+        },
+        "wrong_speaker": {
+          "n": 39,
+          "recall": 1.0,
+          "type_accuracy": 1.0
+        },
+        "unsupported_claim": {
+          "n": 39,
+          "recall": 1.0,
+          "type_accuracy": 1.0
+        },
+        "false_premise_accepted": {
+          "n": 9,
+          "recall": 0.6666666666666666,
+          "type_accuracy": 0.3333333333333333
+        },
+        "out_of_scope_answered": {
+          "n": 5,
+          "recall": 1.0,
+          "type_accuracy": 1.0
+        }
+      }
+    },
+    "vghd_no_speaker": {
+      "n": 262,
+      "positives": 209,
+      "auroc": 0.8948271192561162,
+      "auprc": 0.9753121836601715,
+      "precision": 0.9940119760479041,
+      "recall": 0.7942583732057417,
+      "f1": 0.8829787234042553,
+      "false_positive_rate": 0.018867924528301886,
+      "accuracy": 0.8320610687022901,
+      "per_type": {
+        "fabricated_citation": {
+          "n": 39,
+          "recall": 1.0,
+          "type_accuracy": 1.0
+        },
+        "misattributed_citation": {
+          "n": 39,
+          "recall": 1.0,
+          "type_accuracy": 1.0
+        },
+        "misquotation": {
+          "n": 39,
+          "recall": 0.9743589743589743,
+          "type_accuracy": 0.9487179487179487
+        },
+        "wrong_speaker": {
+          "n": 39,
+          "recall": 0.0,
+          "type_accuracy": 0.0
+        },
+        "unsupported_claim": {
+          "n": 39,
+          "recall": 1.0,
+          "type_accuracy": 1.0
+        },
+        "false_premise_accepted": {
+          "n": 9,
+          "recall": 0.6666666666666666,
+          "type_accuracy": 0.3333333333333333
+        },
+        "out_of_scope_answered": {
+          "n": 5,
+          "recall": 1.0,
+          "type_accuracy": 1.0
+        }
+      }
+    }
+  },
+  "vghd_all_items": {
+    "n": 524,
+    "positives": 418,
+    "auroc": 0.9868195359754446,
+    "auprc": 0.9953284434936143,
+    "precision": 0.9951807228915662,
+    "recall": 0.9880382775119617,
+    "f1": 0.9915966386554621,
+    "false_positive_rate": 0.018867924528301886,
+    "accuracy": 0.9866412213740458,
+    "per_type": {
+      "fabricated_citation": {
+        "n": 78,
+        "recall": 1.0,
+        "type_accuracy": 1.0
+      },
+      "misattributed_citation": {
+        "n": 78,
+        "recall": 1.0,
+        "type_accuracy": 1.0
+      },
+      "misquotation": {
+        "n": 78,
+        "recall": 0.9871794871794872,
+        "type_accuracy": 0.9230769230769231
+      },
+      "wrong_speaker": {
+        "n": 78,
+        "recall": 0.9871794871794872,
+        "type_accuracy": 0.9871794871794872
+      },
+      "unsupported_claim": {
+        "n": 78,
+        "recall": 1.0,
+        "type_accuracy": 1.0
+      },
+      "false_premise_accepted": {
+        "n": 18,
+        "recall": 0.8333333333333334,
+        "type_accuracy": 0.6111111111111112
+      },
+      "out_of_scope_answered": {
+        "n": 10,
+        "recall": 1.0,
+        "type_accuracy": 0.9
+      }
+    }
+  },
+  "repair": {
+    "fabricated_citation": {
+      "repaired_and_verified": 37,
+      "resolved": 37,
+      "abstained": 2
+    },
+    "misattributed_citation": {
+      "repaired_and_verified": 39,
+      "resolved": 39
+    },
+    "misquotation": {
+      "repair_failed": 8,
+      "resolved": 30,
+      "repaired_and_verified": 30,
+      "missed": 1
+    },
+    "wrong_speaker": {
+      "repaired_and_verified": 39,
+      "resolved": 39
+    },
+    "unsupported_claim": {
+      "repaired_and_verified": 39,
+      "resolved": 39
+    },
+    "false_premise_accepted": {
+      "abstained": 5,
+      "resolved": 6,
+      "repaired_and_verified": 1,
+      "missed": 3
+    },
+    "out_of_scope_answered": {
+      "abstained": 5,
+      "resolved": 5
+    }
+  },
+  "repair_examples": [
+    {
+      "type": "fabricated_citation",
+      "before": "Krishna teaches that one's concern is with action alone and never with its fruits; the fruit should not be the motive, nor should one be attached to inaction (BG 2.90).",
+      "after": "Krishna teaches that one's concern is with action alone and never with its fruits; the fruit should not be the motive, nor should one be attached to inaction (BG 2.47).",
+      "edits": [
+        "citation BG 2.90 \u2192 BG 2.47"
+      ]
+    },
+    {
+      "type": "misattributed_citation",
+      "before": "Krishna teaches that one's concern is with action alone and never with its fruits; the fruit should not be the motive, nor should one be attached to inaction (BG 2.64).",
+      "after": "Krishna teaches that one's concern is with action alone and never with its fruits; the fruit should not be the motive, nor should one be attached to inaction (BG 2.47).",
+      "edits": [
+        "citation BG 2.64 \u2192 BG 2.47"
+      ]
+    },
+    {
+      "type": "wrong_speaker",
+      "before": "Arjuna teaches that one's concern is with action alone and never with its fruits; the fruit should not be the motive, nor should one be attached to inaction (BG 2.47).",
+      "after": "Krishna teaches that one's concern is with action alone and never with its fruits; the fruit should not be the motive, nor should one be attached to inaction (BG 2.47).",
+      "edits": [
+        "speaker Arjuna \u2192 Krishna"
+      ]
+    },
+    {
+      "type": "unsupported_claim",
+      "before": "Krishna teaches that one's concern is with action alone and never with its fruits; the fruit should not be the motive, nor should one be attached to inaction (BG 2.47). The Gita also teaches that a pilgrimage to Kashi washes away all sins (BG 2.47).",
+      "after": "Krishna teaches that one's concern is with action alone and never with its fruits; the fruit should not be the motive, nor should one be attached to inaction (BG 2.47).",
+      "edits": [
+        "removed unsupported claim: \u201cThe Gita also teaches that a pilgrimage to Kashi washes away all sins.\u201d"
+      ]
+    },
+    {
+      "type": "fabricated_citation",
+      "before": "The Gita says that the Self is not born and does not die; it is unborn, eternal and ancient, and it is not slain when the body is slain (BG 2.77).",
+      "after": "The Gita says that the Self is not born and does not die; it is unborn, eternal and ancient, and it is not slain when the body is slain (BG 2.20).",
+      "edits": [
+        "citation BG 2.77 \u2192 BG 2.20"
+      ]
+    },
+    {
+      "type": "misattributed_citation",
+      "before": "The Gita says that the Self is not born and does not die; it is unborn, eternal and ancient, and it is not slain when the body is slain (BG 2.51).",
+      "after": "The Gita says that the Self is not born and does not die; it is unborn, eternal and ancient, and it is not slain when the body is slain (BG 2.20).",
+      "edits": [
+        "citation BG 2.51 \u2192 BG 2.20"
+      ]
+    },
+    {
+      "type": "wrong_speaker",
+      "before": "Arjuna says that the Gita says that the Self is not born and does not die; it is unborn, eternal and ancient, and it is not slain when the body is slain (BG 2.20).",
+      "after": "Krishna says that the Gita says that the Self is not born and does not die; it is unborn, eternal and ancient, and it is not slain when the body is slain (BG 2.20).",
+      "edits": [
+        "speaker Arjuna \u2192 Krishna"
+      ]
+    },
+    {
+      "type": "unsupported_claim",
+      "before": "The Gita says that the Self is not born and does not die; it is unborn, eternal and ancient, and it is not slain when the body is slain (BG 2.20). The Gita also teaches that one should never travel during the rainy season (BG 2.20).",
+      "after": "The Gita says that the Self is not born and does not die; it is unborn, eternal and ancient, and it is not slain when the body is slain (BG 2.20).",
+      "edits": [
+        "removed unsupported claim: \u201cThe Gita also teaches that one should never travel during the rainy season.\u201d"
+      ]
+    },
+    {
+      "type": "fabricated_citation",
+      "before": "Krishna tells Arjuna to abandon all duties and come to him alone for shelter, promising to liberate him from all sins and telling him not to sorrow (BG 22.33).",
+      "after": "Krishna tells Arjuna to abandon all duties and come to him alone for shelter, promising to liberate him from all sins and telling him not to sorrow (BG 18.66).",
+      "edits": [
+        "citation BG 22.33 \u2192 BG 18.66"
+      ]
+    },
+    {
+      "type": "misattributed_citation",
+      "before": "Krishna tells Arjuna to abandon all duties and come to him alone for shelter, promising to liberate him from all sins and telling him not to sorrow (BG 18.70).",
+      "after": "Krishna tells Arjuna to abandon all duties and come to him alone for shelter, promising to liberate him from all sins and telling him not to sorrow (BG 18.66).",
+      "edits": [
+        "citation BG 18.70 \u2192 BG 18.66"
+      ]
+    },
+    {
+      "type": "misquotation",
+      "before": "Krishna tells Arjuna to abandon all duties and come to him alone for shelter, promising to liberate him from all sins and telling him not to sorrow (BG 18.66). In the words of the text, \"seven for wealth; sorrow not, I will seven thee from\" (BG 18.66).",
+      "after": "Krishna tells Arjuna to abandon all duties and come to him alone for shelter, promising to liberate him from all sins and telling him not to sorrow (BG 18.66). In the words of the text, \"alone for shelter; sorrow not, I will liberate thee from\" (BG 18.66).",
+      "edits": [
+        "quotation restored from BG 18.66"
+      ]
+    },
+    {
+      "type": "wrong_speaker",
+      "before": "Arjuna tells Arjuna to abandon all duties and come to him alone for shelter, promising to liberate him from all sins and telling him not to sorrow (BG 18.66).",
+      "after": "Krishna tells Arjuna to abandon all duties and come to him alone for shelter, promising to liberate him from all sins and telling him not to sorrow (BG 18.66).",
+      "edits": [
+        "speaker Arjuna \u2192 Krishna"
+      ]
+    }
+  ],
+  "retrieval": {
+    "all": {
+      "n": 78,
+      "hit_at_1": 0.5641025641025641,
+      "recall_at_5": 0.8076923076923077,
+      "mrr": 0.6664529914529914
+    },
+    "en": {
+      "n": 70,
+      "hit_at_1": 0.5285714285714286,
+      "recall_at_5": 0.7857142857142857,
+      "mrr": 0.6354761904761904
+    },
+    "hi": {
+      "n": 8,
+      "hit_at_1": 0.875,
+      "recall_at_5": 1.0,
+      "mrr": 0.9375
+    }
+  },
+  "runtime_seconds": 737.5
+}

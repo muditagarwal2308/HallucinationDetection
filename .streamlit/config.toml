@@ -1,0 +1,24 @@
+# Streamlit configuration for the Hallucination Detection Studio.
+# Run from the repository root:  streamlit run app/Home.py
+
+[browser]
+gatherUsageStats = false
+
+[client]
+toolbarMode = "minimal"
+
+[theme]
+base = "light"
+primaryColor = "#4338CA"
+backgroundColor = "#FFFFFF"
+secondaryBackgroundColor = "#F4F3FB"
+textColor = "#1E1B4B"
+linkColor = "#4338CA"
+borderColor = "#E4E2F3"
+baseRadius = "medium"
+showWidgetBorder = true
+chartCategoricalColors = ["#4338CA", "#F59E0B", "#0D9488", "#DB2777", "#7C3AED", "#16A34A", "#DC2626", "#64748B"]
+
+[theme.sidebar]
+backgroundColor = "#F7F6FC"
+secondaryBackgroundColor = "#FFFFFF"

@@ -1,0 +1,23 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# Large or re-downloadable data
+data/raw/
+results/**/nli_cache_*.json
+
+# Local logs and scratch
+*.log
+real_smoke/
+.streamlit/secrets.toml
+.DS_Store
+Thumbs.db

@@ -1,0 +1,57 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "halludetect"
+version = "1.0.0"
+description = "Hallucination detection and mitigation for LLM question answering: UG-RAV (uncertainty-gated retrieval-augmented verification) and VGHD (verse-grounded detection on the Bhagavad Gita)."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "Mudit Agarwal" }]
+keywords = ["hallucination", "LLM", "semantic entropy", "RAG", "NLI", "Bhagavad Gita", "uncertainty"]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "License :: OSI Approved :: MIT License",
+  "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+dependencies = [
+  "numpy>=1.24",
+  "requests>=2.31",
+]
+
+[project.optional-dependencies]
+app = ["streamlit>=1.35", "plotly>=5.20", "pandas>=2.0"]
+ml = ["torch>=2.2", "transformers>=4.45", "accelerate>=0.30", "sentencepiece>=0.2", "huggingface_hub>=0.23"]
+data = ["indic-transliteration>=2.3"]
+reports = ["matplotlib>=3.8", "markdown>=3.5", "pandas>=2.0"]
+dev = ["pytest>=8", "ruff>=0.5"]
+all = ["halludetect[app,ml,data,reports,dev]"]
+
+[project.scripts]
+halludetect = "halludetect.cli:main"
+
+[project.urls]
+Repository = "https://github.com/muditagarwal2308/HallucinationDetection"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py310"
+extend-exclude = ["notebooks"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP"]
+ignore = ["E731", "B905"]
+
+[tool.ruff.lint.per-file-ignores]
+# hand-written fact and question tables
+"scripts/build_odqa_world.py" = ["E501"]
+"scripts/build_gita_datasets.py" = ["E501"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
