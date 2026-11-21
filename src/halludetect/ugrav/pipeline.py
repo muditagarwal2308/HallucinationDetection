@@ -12,7 +12,7 @@ import numpy as np
 from ..llm.base import LLM
 from ..nli.base import NLIModel
 from ..paths import RESULTS
-from ..text import contains_match
+from ..text import contains_match, is_refusal
 from .fusion import LogisticFusion, feature_row
 from .signals import QuestionRecord, closed_book_signals, rag_signals
 
@@ -72,7 +72,7 @@ class UGRAV:
                       "risk_r0": r0, "fusion_model": model0})
         th = self.thresholds
         decision = {"retrieved": False}
-        if r0 < th["tau_low"]:
+        if r0 < th["tau_low"] and not is_refusal(closed.greedy):
             decision.update(action="accept", answer=closed.greedy,
                             rationale=f"Closed-book risk r̂0 = {r0:.2f} < τ_low = {th['tau_low']:.2f}: the model is "
                                       "consistent, so no retrieval is needed.")
@@ -87,16 +87,24 @@ class UGRAV:
                           "support": rag.support_rag, "contradiction": rag.contradiction_rag,
                           "agreement": rag.agreement, "risk_r_hat": r_hat, "fusion_model": model1})
             decision["retrieved"] = True
-            if r_hat < th["tau_high"] and rag.support_rag >= th["min_support"]:
+            min_sup = th["min_support"]
+            if is_refusal(rag.greedy):
+                decision.update(action="abstain", answer="I don't know.",
+                                rationale="The model declines to answer even with the retrieved evidence, so the "
+                                          "system abstains.")
+            elif r_hat < th["tau_high"] and rag.support_rag >= min_sup:
+                support_txt = (f"the evidence supports the answer (support {rag.support_rag:.2f} ≥ {min_sup:.2f})"
+                               if min_sup > 0 else f"the fused risk already includes the evidence support "
+                                                   f"({rag.support_rag:.2f})")
                 decision.update(action="answer_from_evidence", answer=rag.greedy,
-                                rationale=f"Fused risk r̂ = {r_hat:.2f} < τ_high = {th['tau_high']:.2f} and the "
-                                          f"evidence entails the answer (support {rag.support_rag:.2f}).")
+                                rationale=f"Fused risk r̂ = {r_hat:.2f} < τ_high = {th['tau_high']:.2f} and "
+                                          f"{support_txt}.")
             else:
                 why = []
                 if r_hat >= th["tau_high"]:
                     why.append(f"fused risk r̂ = {r_hat:.2f} ≥ τ_high = {th['tau_high']:.2f}")
-                if rag.support_rag < th["min_support"]:
-                    why.append(f"evidence support {rag.support_rag:.2f} < {th['min_support']:.2f}")
+                if rag.support_rag < min_sup:
+                    why.append(f"evidence support {rag.support_rag:.2f} < {min_sup:.2f}")
                 decision.update(action="abstain", answer="I don't know.",
                                 rationale="Neither the model nor the evidence can be trusted: " + "; ".join(why) + ".")
         if aliases:

@@ -9,7 +9,7 @@ from ..llm.base import LLM
 from .corpus import GitaCorpus
 from .policy import RepairPolicy
 from .simulator import SimulatedGitaLLM
-from .verifier import VerseVerifier
+from .verifier import VerseVerifier, tuned_support_threshold
 
 
 class GitaQA:
@@ -25,7 +25,7 @@ class GitaQA:
         self.corpus = corpus or GitaCorpus.load()
         self.llm = llm
         self.simulator = SimulatedGitaLLM(self.corpus, mode=simulator_mode)
-        self.verifier = verifier or VerseVerifier(self.corpus)
+        self.verifier = verifier or VerseVerifier(self.corpus, support_threshold=tuned_support_threshold("lexical"))
         self.policy = RepairPolicy(self.corpus)
         self.k = k
 

@@ -35,7 +35,7 @@ import random
 from dataclasses import dataclass
 
 from ..llm.base import LLM, Generation
-from ..text import contains_match, normalize_answer
+from ..text import contains_match, content_tokens, normalize_answer
 from .data import WorldItem
 
 TEMPLATES = [("{a}", 0.45), ("{a}.", 0.2), ("It is {a}.", 0.12), ("The answer is {a}.", 0.13), ("It was {a}.", 0.1)]
@@ -71,6 +71,26 @@ def _dirichlet(rng: random.Random, n: int, alpha: float = 1.0) -> list[float]:
     return [x / s for x in xs]
 
 
+def match_world_item(question: str, world: list[WorldItem], min_coverage: float = 0.75,
+                     min_jaccard: float = 0.3) -> WorldItem | None:
+    """Best world item whose question covers the content words of ``question`` (None if no clear match)."""
+    q = set(content_tokens(question))
+    if not q:
+        return None
+    best, best_key = None, (0.0, 0.0)
+    for w in world:
+        t = set(content_tokens(w.question))
+        inter = len(q & t)
+        if not inter:
+            continue
+        key = (inter / len(q), inter / len(q | t))
+        if key > best_key:
+            best, best_key = w, key
+    if best is not None and best_key[0] >= min_coverage and best_key[1] >= min_jaccard:
+        return best
+    return None
+
+
 class SimulatedQALLM(LLM):
     """LLM simulator over the ODQA world; implements :meth:`answer` and :meth:`p_true`."""
 
@@ -91,7 +111,11 @@ class SimulatedQALLM(LLM):
 
     # ------------------------------------------------------------ beliefs
     def item(self, question: str) -> WorldItem | None:
-        return self.by_question.get(normalize_answer(question))
+        """World item for a question; paraphrases ("Who wrote Godan?") are matched by content-word overlap."""
+        hit = self.by_question.get(normalize_answer(question))
+        if hit is not None:
+            return hit
+        return match_world_item(question, self.world)
 
     def closed_belief(self, item: WorldItem) -> tuple[str, dict[str, float]]:
         """Return (knowledge state, distribution over answer meanings)."""

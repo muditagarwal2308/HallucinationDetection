@@ -99,7 +99,7 @@ if qmode == "custom":
     item = C.find_world_item(question)
     aliases = [a.strip() for a in gold.split(",") if a.strip()] or (item.aliases if item else [])
     if item is not None:
-        st.caption(f"Matches world question **{item.id}** — the simulator knows it.")
+        st.caption(f"Matches world question **{item.id}** (“{item.question}”) — the simulator knows it.")
         st.html(_item_chips(item))
 else:
     c1, c2 = st.columns([6, 1], vertical_alignment="bottom")

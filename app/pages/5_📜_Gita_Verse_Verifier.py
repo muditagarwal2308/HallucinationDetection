@@ -77,8 +77,10 @@ with ctx.sidebar:
     st.markdown("**Verifier settings**")
     nli_name = st.selectbox("NLI back-end", list(C.NLI_CHOICES), format_func=C.NLI_CHOICES.get, key="v_nli",
                             help=C.NLI_HELP)
-    threshold = st.slider("Support threshold", 0.2, 0.8, 0.5, 0.05, key="v_threshold",
-                          help="Entailment probability at which a verse counts as supporting a claim.")
+    tuned = C.tuned_threshold(nli_name)
+    threshold = st.slider("Support threshold", 0.05, 0.9, tuned, 0.05, key=f"v_threshold_{nli_name}",
+                          help="Entailment probability at which a verse counts as supporting a claim. The default "
+                               "is the value tuned on the dev split for this NLI back-end (VGHD Results page).")
 verifier, eff_nli, warning = C.get_verifier_safe(nli_name, float(threshold))
 if warning:
     st.warning(warning, icon="⚠️")

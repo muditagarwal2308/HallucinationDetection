@@ -33,6 +33,25 @@ SEVERITY = {
     IssueType.IMPRECISE_CITATION: "minor", IssueType.UNCITED_CLAIM: "minor",
 }
 HALLUCINATION_TYPES = {t for t, s in SEVERITY.items() if s in ("critical", "major")}
+DEFAULT_SUPPORT_THRESHOLD = 0.5
+
+
+def tuned_support_threshold(nli_name: str = "lexical", default: float = DEFAULT_SUPPORT_THRESHOLD) -> float:
+    """Support threshold tuned on the dev split by ``halludetect bench-gita --nli <nli_name>``.
+
+    Falls back to ``default`` when that benchmark has not been run, so interactive use (CLI, app) applies the
+    same operating point as the reported results.
+    """
+    import json
+
+    from ..paths import RESULTS
+
+    tag = re.sub(r"[^A-Za-z0-9]+", "_", nli_name).strip("_")
+    path = RESULTS / "gita" / f"benchmark_{tag}.json"
+    try:
+        return float(json.loads(path.read_text(encoding="utf-8"))["support_threshold"])
+    except (OSError, ValueError, KeyError, TypeError):
+        return default
 # Names and meta words that appear in claims but rarely in the verse text itself.
 GITA_LIGHT_TERMS = ("gita", "bhagavad", "krishna", "arjuna", "sanjaya", "dhritarashtra", "lord", "verse", "text",
                     "end", "ends", "present")

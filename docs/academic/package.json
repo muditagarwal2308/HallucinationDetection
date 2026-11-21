@@ -1,0 +1,14 @@
+{
+  "name": "halludetect-academic-docs",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Builds the dissertation, research paper, progress reports and work plan (DOCX) from Markdown sources with docx-js; PDFs are exported with Microsoft Word.",
+  "scripts": {
+    "build": "node build_docs.js",
+    "pdf": "powershell -ExecutionPolicy Bypass -File export_pdf.ps1"
+  },
+  "dependencies": {
+    "docx": "9.7.1",
+    "marked": "^15.0.0"
+  }
+}

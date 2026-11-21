@@ -33,13 +33,16 @@ def _llm(args):
 def cmd_verify(args) -> None:
     from .gita import GitaCorpus, VerseVerifier
     from .gita.policy import RepairPolicy
+    from .gita.verifier import tuned_support_threshold
     from .nli import get_nli
 
     corpus = GitaCorpus.load()
     nli = None if args.nli == "lexical" else get_nli(args.nli)
-    v = VerseVerifier(corpus, nli)
+    threshold = args.threshold if args.threshold is not None else tuned_support_threshold(args.nli)
+    v = VerseVerifier(corpus, nli, support_threshold=threshold)
     rep = v.verify(args.question, args.answer)
     out = rep.as_dict()
+    out["support_threshold"] = threshold
     out["decision"] = RepairPolicy(corpus).decide(rep).as_dict()
     _print(out)
 
@@ -55,12 +58,13 @@ def cmd_ugrav_ask(args) -> None:
     from .nli import get_nli
     from .ugrav import UGRAV, load_passages, load_world
     from .ugrav.data import PassageRetriever
-    from .ugrav.simulator import SimulatedQALLM
+    from .ugrav.simulator import SimulatedQALLM, match_world_item
 
     world = load_world()
     llm = _llm(args) or SimulatedQALLM(world, seed=args.seed)
     nli = get_nli(args.nli)
-    item = next((w for w in world if w.question.lower() == args.question.lower()), None)
+    exact = next((w for w in world if w.question.lower() == args.question.lower()), None)
+    item = exact or match_world_item(args.question, world)
     pipe = UGRAV(llm, nli, PassageRetriever(load_passages()), k=args.k)
     _print(pipe.run(args.question, aliases=item.aliases if item else None))
 
@@ -111,6 +115,8 @@ def build_parser() -> argparse.ArgumentParser:
     s.add_argument("--question", "-q", required=True)
     s.add_argument("--answer", "-a", required=True)
     s.add_argument("--nli", default="lexical", help="'lexical' or a Hugging Face NLI model id")
+    s.add_argument("--threshold", type=float, default=None,
+                   help="support threshold (default: the value tuned by bench-gita for this NLI, else 0.5)")
     s.set_defaults(func=cmd_verify)
 
     s = sub.add_parser("gita-ask", help="retrieval-augmented Gita QA with verification")

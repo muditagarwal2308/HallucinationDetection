@@ -2,12 +2,13 @@ import numpy as np
 import pytest
 
 from halludetect.nli import LexicalNLI
+from halludetect.text import is_refusal
 from halludetect.ugrav import UGRAV, load_passages, load_world
 from halludetect.ugrav import policy as P
 from halludetect.ugrav.benchmark import evaluate, simulate_records
 from halludetect.ugrav.data import PassageRetriever
 from halludetect.ugrav.fusion import LogisticFusion, out_of_fold
-from halludetect.ugrav.simulator import SimulatedQALLM
+from halludetect.ugrav.simulator import SimulatedQALLM, match_world_item
 
 
 @pytest.fixture(scope="module")
@@ -68,3 +69,13 @@ def test_end_to_end_evaluation_on_one_seed():
     assert det["fused_with_evidence"]["auroc"] > det["semantic_entropy"]["auroc"]
     pol = res["policies_test"]
     assert pol["ug_rav"]["hallucination_rate"] < pol["never_retrieve"]["hallucination_rate"]
+
+
+def test_paraphrased_questions_match_the_world_and_refusals_abstain(world):
+    godan = match_world_item("Who wrote Godan?", world)
+    assert godan is not None and "Godan" in godan.question
+    assert match_world_item("What is the capital of Mars?", world) is None
+    assert is_refusal("I don't know.") and is_refusal("Unknown") and not is_refusal("Munshi Premchand")
+    pipe = UGRAV(SimulatedQALLM(world, seed=0), LexicalNLI(), PassageRetriever(load_passages()), k=5)
+    out = pipe.run("What is the capital of Mars?")
+    assert out["decision"]["action"] == "abstain" and out["decision"]["retrieved"]

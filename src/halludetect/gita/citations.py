@@ -87,11 +87,23 @@ def extract_citations(text: str) -> list[Citation]:
     return sorted(found, key=lambda c: c.span[0])
 
 
+# Pointer phrases that only introduce a citation ("..., as stated in BG 2.23"); they are dropped with it.
+_POINTER_TAIL = re.compile(
+    r"[,;]?\s*\b(?:as\s+(?:is\s+)?(?:stated|described|said|mentioned|given|taught|explained|declared|found|"
+    r"expressed|noted|seen|told|written)\s+(?:in|at|by)|according\s+to|see|cf\.?|refer\s+to|in|from|at)\s*$",
+    re.IGNORECASE,
+)
+
+
 def strip_citations(text: str) -> str:
-    """Remove citations (and the brackets around them) from a sentence."""
+    """Remove citations, the brackets around them and phrases that only introduce them."""
     out = text
     for c in sorted(extract_citations(text), key=lambda c: -c.span[0]):
-        out = out[: c.span[0]] + out[c.span[1]:]
-    out = re.sub(r"\(\s*[,;]?\s*\)", "", out)
+        head = out[: c.span[0]]
+        trimmed = _POINTER_TAIL.sub("", head)
+        if trimmed.strip():
+            head = trimmed
+        out = head + out[c.span[1]:]
+    out = re.sub(r"\(\s*(?:see|cf\.?)?\s*[,;]?\s*\)", "", out, flags=re.IGNORECASE)
     out = re.sub(r"\s+([,.;:!?])", r"\1", out)
     return " ".join(out.split())

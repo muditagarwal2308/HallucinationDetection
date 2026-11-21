@@ -1,0 +1,19 @@
+{
+  "name": "halludetect-milestone-decks",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Milestone presentation decks (M1-M4) for the M.Tech dissertation on hallucination detection, generated from the repository's result files.",
+  "main": "build_decks.js",
+  "scripts": {
+    "build": "node build_decks.js",
+    "pdf": "powershell -NoProfile -ExecutionPolicy Bypass -File export_pdf.ps1"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "pptxgenjs": "4.0.1",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-icons": "^5.3.0",
+    "sharp": "^0.33.5"
+  }
+}

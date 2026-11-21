@@ -129,6 +129,19 @@ def has_negation(text: str) -> bool:
     return bool(toks & NEGATIONS) or "n't" in text.lower()
 
 
+_REFUSAL = re.compile(
+    r"^\W*(?:i\s+(?:do\s+not|don['’]t)\s+know|i\s+am\s+not\s+sure|i['’]m\s+not\s+sure|unknown|"
+    r"i\s+(?:cannot|can['’]t)\s+(?:answer|say|determine)|(?:there\s+is\s+)?no\s+(?:answer|information)|"
+    r"unanswerable|not\s+enough\s+information)\b",
+    re.IGNORECASE,
+)
+
+
+def is_refusal(answer: str) -> bool:
+    """True for short-answer refusals such as "I don't know." (an abstention, not a factual claim)."""
+    return bool(_REFUSAL.search(answer or ""))
+
+
 _SENT = re.compile(r"(?<=[.!?])\s+(?=[\"'“‘(\[]?[A-Z0-9\u0900-\u097F])")
 
 

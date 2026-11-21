@@ -376,14 +376,24 @@ def cached_verifier(nli_name: str, support_threshold: float):
     return VerseVerifier(get_corpus(), nli, support_threshold=support_threshold)
 
 
-def get_verifier_safe(nli_name: str = "lexical", support_threshold: float = 0.5):
+def tuned_threshold(nli_name: str) -> float:
+    """Support threshold tuned by the VGHD benchmark for this NLI back-end (0.5 if it has not been run)."""
+    from halludetect.gita.verifier import tuned_support_threshold
+
+    return round(tuned_support_threshold(nli_name), 2)
+
+
+def get_verifier_safe(nli_name: str = "lexical", support_threshold: float | None = None):
     """Return ``(verifier, effective_nli_name, warning)``."""
     if nli_name == "lexical":
-        return cached_verifier("lexical", support_threshold), "lexical", None
+        th = tuned_threshold("lexical") if support_threshold is None else support_threshold
+        return cached_verifier("lexical", th), "lexical", None
     _, warning = get_nli_safe(nli_name)
     if warning:
-        return cached_verifier("lexical", support_threshold), "lexical", warning
-    return cached_verifier(nli_name, support_threshold), nli_name, None
+        th = tuned_threshold("lexical") if support_threshold is None else support_threshold
+        return cached_verifier("lexical", th), "lexical", warning
+    th = tuned_threshold(nli_name) if support_threshold is None else support_threshold
+    return cached_verifier(nli_name, th), nli_name, None
 
 
 @st.cache_resource(show_spinner=False)
@@ -406,10 +416,13 @@ def world_by_id() -> dict:
 
 
 def find_world_item(question: str):
+    """World item for a typed question: exact match first, then the simulator's paraphrase matcher."""
     from halludetect.text import normalize_answer
+    from halludetect.ugrav.simulator import match_world_item
 
     key = normalize_answer(question or "")
-    return next((w for w in get_world() if normalize_answer(w.question) == key), None)
+    exact = next((w for w in get_world() if normalize_answer(w.question) == key), None)
+    return exact or match_world_item(question or "", get_world())
 
 
 @st.cache_resource(show_spinner=False)

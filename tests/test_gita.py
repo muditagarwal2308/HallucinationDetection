@@ -1,10 +1,11 @@
 import pytest
 
 from halludetect.gita import GitaCorpus, VerseVerifier
-from halludetect.gita.citations import extract_citations
+from halludetect.gita.citations import extract_citations, strip_citations
 from halludetect.gita.claims import segment_claims
 from halludetect.gita.pipeline import GitaQA
 from halludetect.gita.policy import RepairPolicy
+from halludetect.gita.verifier import tuned_support_threshold
 
 SOUL_Q = "Which verse of the Bhagavad Gita says that the soul cannot be cut by weapons?"
 
@@ -90,3 +91,20 @@ def test_simulated_rag_pipeline_catches_injected_errors():
     assert out["report"]["hallucinated"] and "fabricated_citation" in out["report"]["types"]
     out = qa.ask("What does Krishna say about action and its fruits?", simulator_mode="none")
     assert out["report"]["verdict"] == "faithful" and out["decision"]["action"] == "accept"
+
+
+def test_citation_pointer_phrases_are_stripped_with_the_citation(corpus):
+    assert strip_citations("Arjuna says the soul cannot be cut by weapons, as stated in BG 2.23.") == \
+        "Arjuna says the soul cannot be cut by weapons."
+    assert strip_citations("Act without attachment (see BG 3.19).") == "Act without attachment."
+    assert strip_citations("Krishna teaches detachment in BG 2.47.") == "Krishna teaches detachment."
+    rep = VerseVerifier(corpus, support_threshold=tuned_support_threshold("lexical")).verify(
+        "Who says that the soul cannot be cut by weapons?",
+        "Arjuna says the soul cannot be cut by weapons, as stated in BG 2.23.")
+    assert rep.types == {"wrong_speaker"}
+    assert RepairPolicy(corpus).decide(rep).answer.startswith("Krishna says")
+
+
+def test_tuned_support_threshold_falls_back_to_default():
+    assert tuned_support_threshold("no-such-nli-backend") == 0.5
+    assert 0.0 < tuned_support_threshold("lexical") <= 1.0

@@ -15,6 +15,10 @@ venv/
 data/raw/
 results/**/nli_cache_*.json
 
+# Node build tooling for documents and decks
+node_modules/
+package-lock.json
+
 # Local logs and scratch
 *.log
 real_smoke/
