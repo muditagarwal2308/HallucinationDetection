@@ -140,19 +140,19 @@ def right(b):
 def fig_taxonomy(shaded: set[str], name: str, note: str) -> None:
     fig, ax = canvas(6.6, 3.15)
     root = box(ax, 50, 42.5, 34, 6.5, "Hallucination in LLMs", "grey", 10.5, True)
-    fa = box(ax, 24, 29.5, 34, 8, "Factuality hallucination\nconflicts with world knowledge", "blue", 9.5, True)
-    fb = box(ax, 74, 29.5, 40, 8, "Faithfulness hallucination\nbreaks instruction, context or logic", "indigo", 9.5,
-             True)
+    fa = box(ax, 20.5, 29.5, 37, 8, "Factuality hallucination\nconflicts with world knowledge", "blue", 9.5, True)
+    fb = box(ax, 70.5, 29.5, 43, 8, "Faithfulness hallucination\nbreaks instruction, context or logic", "indigo",
+             9.5, True)
     leaves = [
-        ("inconsistency", 12, "Factual\ninconsistency\nwrong fact stated"),
-        ("fabrication", 33, "Factual\nfabrication\ninvented fact\nor source"),
-        ("instruction", 55, "Instruction\ninconsistency\ntask ignored"),
-        ("context", 74.5, "Context\ninconsistency\ncontradicts the\ngiven context"),
-        ("logical", 93, "Logical\ninconsistency\nself-\ncontradiction"),
+        ("inconsistency", 10, "Factual\ninconsistency\nwrong fact stated"),
+        ("fabrication", 30, "Factual\nfabrication\ninvented fact\nor source"),
+        ("instruction", 51, "Instruction\ninconsistency\ntask ignored"),
+        ("context", 70.5, "Context\ninconsistency\ncontradicts the\ngiven context"),
+        ("logical", 90, "Logical\ninconsistency\nself-\ncontradiction"),
     ]
     for key, x, label in leaves:
         on = key in shaded
-        b = box(ax, x, 11, 18, 13.5, label, "orange" if on else "grey", 8.8, False, lw=1.6 if on else 0.9)
+        b = box(ax, x, 11, 18, 13.5, label, "orange" if on else "grey", 8.6, False, lw=1.6 if on else 0.9)
         parent = fa if key in ("inconsistency", "fabrication") else fb
         arrow(ax, bottom(parent), top(b))
     arrow(ax, bottom(root), top(fa))
@@ -164,13 +164,13 @@ def fig_taxonomy(shaded: set[str], name: str, note: str) -> None:
 def fig_categorisation(spec: dict, name: str, note: str) -> None:
     fig, ax = canvas(6.6, 3.0)
     root = box(ax, 50, 40, 44, 6.5, spec["root"], "grey", 10.5, True)
-    xs = {0: [10, 27, 44], 1: [60, 77, 92.5]}
+    xs = {0: [8.5, 25.5, 42.5], 1: [58, 75, 91.5]}
     for i, (head, leaves) in enumerate(spec["branches"]):
-        hx = 27 if i == 0 else 76.5
+        hx = 25.5 if i == 0 else 75
         hb = box(ax, hx, 27.5, 26, 6.5, head, "blue" if i == 0 else "indigo", 10, True)
         arrow(ax, bottom(root), top(hb))
         for x, (label, on) in zip(xs[i], leaves):
-            b = box(ax, x, 10.5, 15.5, 14, label, "orange" if on else "grey", 8.6, lw=1.6 if on else 0.9)
+            b = box(ax, x, 10.5, 15, 14, label, "orange" if on else "grey", 8.0, lw=1.6 if on else 0.9)
             arrow(ax, bottom(hb), top(b))
     ax.text(50, 1.0, note, ha="center", va="center", fontsize=8.5, style="italic", color="#444444")
     save(fig, name)
@@ -183,7 +183,7 @@ def fig_ugrav_architecture() -> None:
     q = box(ax, cx, H - 5, 30, 5.5, "Question $q$", "grey", 10, True)
     s1 = box(ax, cx, H - 15, 50, 7.5, "Closed-book sampling\ngreedy answer $a_0$ + $K$ samples ($T = 1.0$)", "blue")
     s2 = box(ax, cx, H - 26.5, 50, 7.5,
-             "Uncertainty signals\nSE, self-consistency, PE, LN-PE, P(True), min-token prob.", "blue")
+             "Uncertainty signals: SE, self-consistency,\nPE, LN-PE, P(True), min-token probability", "blue")
     s3 = box(ax, cx, H - 38, 50, 7.5,
              "Closed-book risk  $\\hat{r}_0 = \\sigma(\\mathbf{w}_0^{\\top}\\mathbf{x}_0 + b_0)$", "indigo")
     d1 = diamond(ax, cx, H - 51, 34, 12, "$\\hat{r}_0 < \\tau_{low}$ ?")
@@ -219,26 +219,26 @@ def fig_ugrav_architecture() -> None:
 
 
 def fig_se_godan() -> None:
-    fig, ax = canvas(6.6, 2.75)
-    ax.text(17, 25.5, "Step 1: sample $K = 5$ answers", ha="center", fontsize=9.5, fontweight="bold")
-    ax.text(50, 25.5, "Step 2: cluster by meaning", ha="center", fontsize=9.5, fontweight="bold")
-    ax.text(84, 25.5, "Step 3: entropy over clusters", ha="center", fontsize=9.5, fontweight="bold")
+    fig, ax = canvas(6.6, 1.95)
+    ax.text(17, 30.0, "Step 1: sample $K = 5$ answers", ha="center", fontsize=9.5, fontweight="bold")
+    ax.text(50, 30.0, "Step 2: cluster by meaning", ha="center", fontsize=9.5, fontweight="bold")
+    ax.text(84, 30.0, "Step 3: entropy over clusters", ha="center", fontsize=9.5, fontweight="bold")
     samples = ["Premchand", "Munshi Premchand", "Premchand", "Rabindranath Tagore", "Sarat Chandra"]
     colors = ["blue", "blue", "blue", "red", "orange"]
     for i, (s, c) in enumerate(zip(samples, colors)):
-        box(ax, 17, 21 - i * 4.4, 27, 3.4, s, c, 8.8, round_=0.8)
+        box(ax, 17, 25.5 - i * 4.4, 27, 3.4, s, c, 8.8, round_=0.8)
     clusters = [("$C_1$: Premchand    $|C_1| = 3$", "blue"), ("$C_2$: Tagore    $|C_2| = 1$", "red"),
                 ("$C_3$: Sarat Chandra    $|C_3| = 1$", "orange")]
     for i, (t, c) in enumerate(clusters):
-        box(ax, 50, 19.5 - i * 6.2, 29, 4.6, t, c, 8.8, round_=0.8)
-    ax.text(50, 3.0, "bidirectional NLI entailment\n(question as context)", ha="center", fontsize=8.2,
+        box(ax, 50, 25 - i * 6.0, 29, 4.4, t, c, 8.8, round_=0.8)
+    ax.text(50, 6.0, "bidirectional NLI entailment\n(question as context)", ha="center", fontsize=8.2,
             style="italic", color="#444444")
-    ax.text(84, 19.5, "$p(C) = (0.6,\\ 0.2,\\ 0.2)$", ha="center", fontsize=10)
-    ax.text(84, 13.0, "$SE = -\\sum_c\\, p(c)\\,\\ln p(c)$", ha="center", fontsize=10)
-    ax.text(84, 6.8, "$SE \\approx 0.95$ nats  (max $\\ln 5 = 1.61$)", ha="center", fontsize=10)
-    ax.text(84, 2.2, "uncertain: retrieval is useful", ha="center", fontsize=8.5, style="italic", color=EDGE["red"])
-    arrow(ax, (31.5, 12.3), (35, 12.3))
-    arrow(ax, (65, 12.3), (68.5, 12.3))
+    ax.text(84, 24.5, "$p(C) = (0.6,\\ 0.2,\\ 0.2)$", ha="center", fontsize=10)
+    ax.text(84, 18.0, "$SE = -\\sum_c\\, p(c)\\,\\ln p(c)$", ha="center", fontsize=10)
+    ax.text(84, 11.5, "$SE \\approx 0.95$ nats  (max $\\ln 5 = 1.61$)", ha="center", fontsize=10)
+    ax.text(84, 6.5, "uncertain: retrieval is useful", ha="center", fontsize=8.5, style="italic", color=EDGE["red"])
+    arrow(ax, (31.5, 16.8), (35, 16.8))
+    arrow(ax, (65, 16.8), (68.5, 16.8))
     save(fig, "se_godan")
 
 
@@ -265,29 +265,30 @@ def fig_exp_pipeline() -> None:
 
 def fig_vghd_pipeline() -> None:
     fig, ax = canvas(6.6, 4.3)
-    q = box(ax, 13, 52, 22, 9, "Question\n(English, Hindi or\nromanised Sanskrit)", "grey", 8.8, True)
-    pr = box(ax, 13, 33, 22, 8, "Premise and\nscope check", "orange", 8.8)
-    rt = box(ax, 40, 52, 24, 9, "Hybrid verse retrieval\nBM25 + IAST + Devanagari\n(RRF fusion)", "teal", 8.6)
-    cp = box(ax, 40, 66, 24, 6, "Corpus: 701 verses", "grey", 8.6)
-    g = box(ax, 68, 52, 24, 9, "LLM answer citing\nverses as BG c.v", "blue", 8.8)
-    sg = box(ax, 68, 36, 24, 8, "Claim segmentation and\ncitation extraction", "blue", 8.6)
+    q = box(ax, 13, 50, 23, 9, "Question\n(English, Hindi or\nromanised Sanskrit)", "grey", 8.6, True)
+    pr = box(ax, 13, 30, 22, 8, "Premise and\nscope check", "orange", 8.8)
+    rt = box(ax, 42, 50, 27, 9, "Hybrid verse retrieval\nBM25, IAST, Devanagari\n(rank fusion)", "teal", 8.4)
+    cp = box(ax, 42, 61.5, 24, 5, "Corpus: 701 verses", "grey", 8.6)
+    g = box(ax, 72, 50, 24, 9, "LLM answer citing\nverses as BG c.v", "blue", 8.8)
+    sg = box(ax, 71, 35, 26, 8, "Claim segmentation and\ncitation extraction", "blue", 8.6)
     checks = ["Citation\nexists?", "Verse entails\nclaim?", "Quotation\nmatches?", "Speaker\ncorrect?"]
     cx = [46, 60, 74, 88]
     cbs = [box(ax, x, 20, 12.5, 8, t, "indigo", 8.4) for x, t in zip(cx, checks)]
-    rep = box(ax, 40, 6, 28, 6.5, "Verification report", "yellow", 9, True)
-    pol = box(ax, 13, 13, 22, 13, "Policy\naccept / repair /\nregenerate /\nabstain", "green", 8.8, True)
+    rep = box(ax, 55, 7, 26, 7, "Verification report", "yellow", 9, True)
+    pol = box(ax, 86, 7, 26, 9, "Policy: accept, repair,\nregenerate or abstain", "green", 8.8, True)
     arrow(ax, right(q), left(rt))
     arrow(ax, bottom(cp), top(rt))
     arrow(ax, right(rt), left(g))
     arrow(ax, bottom(g), top(sg))
     arrow(ax, bottom(q), top(pr))
     for b in cbs:
-        arrow(ax, (b[0], 32), top(b))
-    ax.plot([46, 88], [32, 32], color="#333333", lw=1.1)
-    for b in cbs:
-        arrow(ax, bottom(b), (40 + (b[0] - 67) * 0.3, 9.25), color=GREY)
-    arrow(ax, bottom(pr), (24, 8), color=GREY)
-    arrow(ax, left(rep), (24, 6.0))
+        arrow(ax, (b[0], 28), top(b))
+    ax.plot([46, 88], [28, 28], color="#333333", lw=1.1)
+    ax.plot([71, 71], [31, 28], color="#333333", lw=1.1)
+    for b, xe in zip(cbs, (49, 53, 58, 63)):
+        arrow(ax, bottom(b), (xe, 10.5), color=GREY)
+    poly_arrow(ax, [bottom(pr), (13, 7), left(rep)], color=GREY)
+    arrow(ax, right(rep), left(pol))
     save(fig, "vghd_pipeline")
 
 
@@ -314,23 +315,22 @@ def fig_gita_example() -> None:
     fig, ax = canvas(6.6, 3.7)
     ax.add_patch(FancyBboxPatch((1, 41), 98, 13.5, boxstyle="round,pad=0,rounding_size=1.2", fc=LIGHT["grey"],
                                 ec=EDGE["grey"], lw=1))
-    ax.text(3, 51.5, "Question:", fontweight="bold", fontsize=9.5, va="center")
-    ax.text(17, 51.5, "Which verse of the Bhagavad Gita says that the soul cannot be cut by weapons?",
-            fontsize=9.5, va="center")
-    ax.text(3, 45.5, "LLM answer:", fontweight="bold", fontsize=9.5, va="center")
-    ax.text(17, 47.4, "The Gita states that the soul cannot be cut by weapons or burnt by fire.", fontsize=9.5,
+    ax.text(3, 51.3, "Question:", fontweight="bold", fontsize=9, va="center")
+    ax.text(19.5, 51.3, "Which verse of the Bhagavad Gita says that the soul cannot be cut by weapons?",
+            fontsize=8.4, va="center")
+    ax.text(3, 47.0, "LLM answer:", fontweight="bold", fontsize=9, va="center")
+    ax.text(19.5, 47.0, "The Gita states that the soul cannot be cut by weapons or burnt by fire.", fontsize=9,
             va="center")
-    ax.text(17, 43.6, "This is described in BG 2.20.", fontsize=9.5, va="center", color=EDGE["red"],
+    ax.text(19.5, 43.3, "This is described in BG 2.20.", fontsize=9, va="center", color=EDGE["red"],
             fontweight="bold")
 
-    def verse_box(x0, ref, colour, verdict, iast_cut, eng_cut):
+    def verse_box(x0, ref, colour, verdict, iast_cut, eng):
         ax.add_patch(FancyBboxPatch((x0, 2), 47, 33, boxstyle="round,pad=0,rounding_size=1.2", fc=LIGHT[colour],
                                     ec=EDGE[colour], lw=1.3))
         ax.text(x0 + 23.5, 31.5, ref, ha="center", fontweight="bold", fontsize=10)
         v = verses[ref.split()[1]]
         ax.text(x0 + 23.5, 25.5, " ".join(v["iast"].split()[:iast_cut]) + " \u2026", ha="center", fontsize=8.6,
                 style="italic")
-        eng = " ".join(v["english"].split()[:eng_cut])
         words, lines, cur = eng.split(), [], ""
         for w_ in words:
             if len(cur) + len(w_) > 44:
@@ -339,12 +339,14 @@ def fig_gita_example() -> None:
             else:
                 cur = (cur + " " + w_).strip()
         lines.append(cur)
-        ax.text(x0 + 23.5, 16.5, "\u201c" + "\n".join(lines) + " \u2026\u201d", ha="center", va="center", fontsize=8.6)
+        ax.text(x0 + 23.5, 16.5, "\u201c" + "\n".join(lines) + "\u201d", ha="center", va="center", fontsize=8.6)
         ax.text(x0 + 23.5, 6.0, verdict, ha="center", va="center", fontsize=9, color=EDGE[colour],
                 fontweight="bold")
 
-    verse_box(1.5, "BG 2.20 (cited verse)", "red", "claim not entailed  $\\Rightarrow$  misattributed citation", 5, 16)
-    verse_box(51.5, "BG 2.23 (correct verse)", "green", "claim entailed  $\\Rightarrow$  suggested citation", 6, 13)
+    verse_box(1.5, "BG 2.20 (cited verse)", "red", "claim not entailed: misattributed citation", 4,
+              "He is not born, nor doth he die; \u2026 he is not slain when the body is slaughtered.")
+    verse_box(51.5, "BG 2.23 (correct verse)", "green", "claim entailed: suggested citation", 4,
+              "Weapons cleave him not, nor fire burneth him, nor waters wet him, nor wind drieth him away.")
     arrow(ax, (30, 41), (25, 35.2), color=EDGE["red"])
     arrow(ax, (60, 41), (75, 35.2), color=EDGE["green"], ls="--")
     ax.text(73, 38.4, "verifier searches the corpus", fontsize=8, style="italic", color=EDGE["green"])
@@ -352,20 +354,20 @@ def fig_gita_example() -> None:
 
 
 def fig_software_architecture() -> None:
-    fig, ax = canvas(6.6, 4.6)
+    fig, ax = canvas(6.6, 4.0)
     layers = [
-        (52, "Interfaces", "grey", ["CLI: halludetect\n(verify, gita-ask, ugrav-ask,\nse, search, bench-*)",
+        (52, "Interfaces", "grey", ["CLI: halludetect\nverify, gita-ask,\nugrav-ask, bench-*",
                                     "Streamlit studio\nHome + 8 pages", "Kaggle GPU\nnotebook",
                                     "Scripts: corpus,\ndatasets, real pilot,\nfigures"]),
         (37, "Frameworks", "orange", ["halludetect.ugrav\nsignals \u00b7 fusion \u00b7 policy\nbenchmark \u00b7 pipeline",
                                       "halludetect.gita\ncorpus \u00b7 citations \u00b7 claims\npremise \u00b7 verifier "
                                       "\u00b7 policy",
                                       "simulators\nSimulatedQALLM\nSimulatedGitaLLM"]),
-        (22, "Core library", "blue", ["uncertainty\nclustering, SE, PE,\nself-consistency",
-                                      "nli\nLexicalNLI \u00b7 HFNLI\n(DeBERTa-large-MNLI)",
-                                      "retrieval\nBM25 \u00b7 reciprocal\nrank fusion",
-                                      "llm\nHF local \u00b7 OpenAI-\ncompatible",
-                                      "metrics \u00b7 text\nAUROC, ECE, AURAC,\nbootstrap CIs"]),
+        (22, "Core library", "blue", ["uncertainty\nclustering, SE,\nPE, SC",
+                                      "nli\nLexicalNLI,\nHFNLI (DeBERTa)",
+                                      "retrieval\nBM25, reciprocal\nrank fusion",
+                                      "llm\nHF local, OpenAI-\ncompatible",
+                                      "metrics, text\nAUROC, ECE,\nAURAC, CIs"]),
         (7, "Data and results", "green", ["Gita corpus (701 v.)\nQA (106) \u00b7 test set (524)",
                                           "ODQA world (197 q.)\npassages (198)",
                                           "PopQA + Wikipedia\ncache (real pilot)",
@@ -378,7 +380,7 @@ def fig_software_architecture() -> None:
         n = len(items)
         w = (93 - 2 * (n - 1)) / n
         for i, t in enumerate(items):
-            box(ax, 5 + w / 2 + i * (w + 2), y - 0.8, w, 9.6, t, colour, 8.2, round_=0.8)
+            box(ax, 5 + w / 2 + i * (w + 2), y - 0.8, w, 9.6, t, colour, 7.8, round_=0.8)
     for y in (45.2, 30.2, 15.2):
         arrow(ax, (50, y + 0.2), (50, y - 1.7), style="<|-|>")
     save(fig, "software_architecture")
@@ -426,10 +428,13 @@ def gantt(tasks, start, end, name, title=None, markers=(), unit="month", width=6
     if title:
         ax.set_title(title, pad=18)
     from matplotlib.patches import Patch
-    items = legend or [("done", "completed"), ("active", "in progress"), ("planned", "planned"),
-                       ("writing", "writing")]
+    present = {t[3] for t in tasks}
+    items = legend or [(k, v) for k, v in [("done", "completed"), ("active", "in progress"),
+                                           ("planned", "planned"), ("writing", "writing"),
+                                           ("milestone", "milestone")] if k in present]
     handles = [Patch(color=STATUS_COL[k], label=v) for k, v in items]
-    ax.legend(handles=handles, loc="upper center", bbox_to_anchor=(0.45, -0.17 if unit == "month" else -0.2),
+    ax_h = fig.get_figheight() * ax.get_position().height
+    ax.legend(handles=handles, loc="upper center", bbox_to_anchor=(0.45, -(0.5 if unit == "month" else 0.62) / ax_h),
               ncol=len(handles), fontsize=8.5)
     save(fig, name)
 
@@ -601,7 +606,7 @@ def fig_policies(res: dict, name: str) -> None:
 
 def fig_risk_coverage(res: dict, name: str) -> None:
     rc = res["risk_coverage_test"]
-    fig, ax = plt.subplots(figsize=(6.0, 3.3))
+    fig, ax = plt.subplots(figsize=(4.4, 3.0))
     style = {"never_retrieve": (INDIGO, "--"), "always_retrieve": (TEAL, "--"), "sc_abstention": (GREY, ":"),
              "flare_style": ("#7B61C9", "-."), "se_gated_no_verification": ("#2F5F98", "-."),
              "ug_rav": (ORANGE, "-"), "oracle": ("#222222", ":")}
@@ -615,7 +620,7 @@ def fig_risk_coverage(res: dict, name: str) -> None:
     ax.set_ylabel("Selective risk (error rate on answered)")
     ax.set_xlim(0, 1)
     ax.set_ylim(0, max(0.35, max(max(v["risk"]) for v in rc.values()) * 1.05))
-    ax.legend(fontsize=7.8, loc="upper left")
+    ax.legend(fontsize=8, loc="upper left", bbox_to_anchor=(1.01, 1.0))
     ax.grid(color="#EEEEEE", lw=0.6)
     save(fig, name)
 
@@ -845,18 +850,18 @@ def main() -> None:
     fig_taxonomy({"inconsistency", "fabrication", "context"}, "taxonomy_combined",
                  "shaded: types addressed in this dissertation (UG-RAV: factuality; VGHD: fabrication and context)")
     fig_categorisation({"root": "Handling hallucination in LLMs", "branches": [
-        ("Detection", [("Uncertainty-based\n(entropy, SE,\nP(True))", True),
-                       ("Consistency-based\n(SelfCheckGPT,\nself-consistency)", True),
-                       ("Evidence-based\n(NLI, MiniCheck,\nFActScore)", True)]),
+        ("Detection", [("Uncertainty-\nbased\n(entropy, SE)", True),
+                       ("Consistency-\nbased\n(SelfCheckGPT)", True),
+                       ("Evidence-\nbased\n(NLI, MiniCheck)", True)]),
         ("Mitigation", [("Adaptive\nretrieval\n(FLARE, Rowen)", True),
-                        ("Training-based\n(Self-RAG,\nfine-tuning)", False),
+                        ("Training-\nbased\n(Self-RAG)", False),
                         ("Abstention\n(selective\nanswering)", True)])]},
         "categorisation_ugrav", "shaded: training-free approaches combined in UG-RAV")
     fig_categorisation({"root": "Hallucination detection approaches", "branches": [
-        ("Reference-free", [("Uncertainty-based\n(entropy, semantic\nentropy)", False),
-                            ("Consistency-based\n(SelfCheckGPT)", False),
+        ("Reference-free", [("Uncertainty-\nbased\n(entropy, SE)", False),
+                            ("Consistency-\nbased\n(SelfCheckGPT)", False),
                             ("Internal-state\n(hidden-state\nprobes)", False)]),
-        ("Reference-based", [("Faithfulness /\nNLI (MiniCheck,\nFActScore)", True),
+        ("Reference-based", [("Faithfulness\n(NLI, MiniCheck,\nFActScore)", True),
                              ("Attribution /\ncitation\n(AIS, ALCE)", True),
                              ("LLM-as-judge\n(RAGAS)", False)])]},
         "categorisation_vghd", "shaded: approaches most relevant to verse-grounded detection")

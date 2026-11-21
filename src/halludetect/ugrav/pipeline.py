@@ -94,7 +94,7 @@ class UGRAV:
                                           "system abstains.")
             elif r_hat < th["tau_high"] and rag.support_rag >= min_sup:
                 support_txt = (f"the evidence supports the answer (support {rag.support_rag:.2f} ≥ {min_sup:.2f})"
-                               if min_sup > 0 else f"the fused risk already includes the evidence support "
+                               if min_sup > 0 else f"the fusion model has already weighed the evidence support "
                                                    f"({rag.support_rag:.2f})")
                 decision.update(action="answer_from_evidence", answer=rag.greedy,
                                 rationale=f"Fused risk r̂ = {r_hat:.2f} < τ_high = {th['tau_high']:.2f} and "

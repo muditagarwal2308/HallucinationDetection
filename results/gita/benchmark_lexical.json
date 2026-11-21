@@ -642,9 +642,8 @@
       "resolved": 39
     },
     "misquotation": {
-      "repair_failed": 8,
-      "resolved": 30,
-      "repaired_and_verified": 30,
+      "repaired_and_verified": 38,
+      "resolved": 38,
       "missed": 1
     },
     "wrong_speaker": {
@@ -684,6 +683,14 @@
       ]
     },
     {
+      "type": "misquotation",
+      "before": "Krishna teaches that one's concern is with action alone and never with its fruits; the fruit should not be the motive, nor should one be attached to inaction (BG 2.47). In the words of the text, \"music with its gold; so let not the kingdom of\" (BG 2.47).",
+      "after": "Krishna teaches that one's concern is with action alone and never with its fruits; the fruit should not be the motive, nor should one be attached to inaction (BG 2.47). In the words of the text, \"never with its fruits; so let not the fruit of action be thy motive, nor be thou to inaction attached.\" (BG 2.47).",
+      "edits": [
+        "quotation restored from BG 2.47"
+      ]
+    },
+    {
       "type": "wrong_speaker",
       "before": "Arjuna teaches that one's concern is with action alone and never with its fruits; the fruit should not be the motive, nor should one be attached to inaction (BG 2.47).",
       "after": "Krishna teaches that one's concern is with action alone and never with its fruits; the fruit should not be the motive, nor should one be attached to inaction (BG 2.47).",
@@ -713,6 +720,14 @@
       "after": "The Gita says that the Self is not born and does not die; it is unborn, eternal and ancient, and it is not slain when the body is slain (BG 2.20).",
       "edits": [
         "citation BG 2.51 \u2192 BG 2.20"
+      ]
+    },
+    {
+      "type": "misquotation",
+      "before": "The Gita says that the Self is not born and does not die; it is unborn, eternal and ancient, and it is not slain when the body is slain (BG 2.20). In the words of the text, \"not mountain, nor anger he die; nor having been, forever\" (BG 2.20).",
+      "after": "The Gita says that the Self is not born and does not die; it is unborn, eternal and ancient, and it is not slain when the body is slain (BG 2.20). In the words of the text, \"He is not born, nor doth he die; nor having been, ceaseth he any more to be\" (BG 2.20).",
+      "edits": [
+        "quotation restored from BG 2.20"
       ]
     },
     {
@@ -746,22 +761,6 @@
       "edits": [
         "citation BG 18.70 \u2192 BG 18.66"
       ]
-    },
-    {
-      "type": "misquotation",
-      "before": "Krishna tells Arjuna to abandon all duties and come to him alone for shelter, promising to liberate him from all sins and telling him not to sorrow (BG 18.66). In the words of the text, \"seven for wealth; sorrow not, I will seven thee from\" (BG 18.66).",
-      "after": "Krishna tells Arjuna to abandon all duties and come to him alone for shelter, promising to liberate him from all sins and telling him not to sorrow (BG 18.66). In the words of the text, \"alone for shelter; sorrow not, I will liberate thee from\" (BG 18.66).",
-      "edits": [
-        "quotation restored from BG 18.66"
-      ]
-    },
-    {
-      "type": "wrong_speaker",
-      "before": "Arjuna tells Arjuna to abandon all duties and come to him alone for shelter, promising to liberate him from all sins and telling him not to sorrow (BG 18.66).",
-      "after": "Krishna tells Arjuna to abandon all duties and come to him alone for shelter, promising to liberate him from all sins and telling him not to sorrow (BG 18.66).",
-      "edits": [
-        "speaker Arjuna \u2192 Krishna"
-      ]
     }
   ],
   "retrieval": {
@@ -784,5 +783,5 @@
       "mrr": 0.9375
     }
   },
-  "runtime_seconds": 737.5
+  "runtime_seconds": 298.8
 }
