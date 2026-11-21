@@ -28,7 +28,7 @@
 The dissertation proposes **UG-RAV**, a training-free pipeline that (i) estimates how uncertain an open LLM is about a closed-book answer, (ii) retrieves evidence only when that uncertainty is high, (iii) verifies the answer against the evidence with natural language inference (NLI), (iv) adds the change in semantic entropy after retrieval (ΔSE) as a new signal, (v) fuses all signals with logistic regression and (vi) accepts, answers from verified evidence, or abstains. The progress report contains the design but no implementation or results. This report documents a **complete, tested implementation** of that design and two experiments:
 
 * a **simulation study** (5 seeds × 197 questions = 985 question instances) with a mechanistic LLM simulator that reproduces the phenomena the dissertation targets — long-tail ignorance, confident misconceptions, confabulation, ambiguity, knowledge conflict and misleading retrieval; and
-* a **real-model pilot** on 90 PopQA questions with Qwen2.5-1.5B-Instruct, live Wikipedia retrieval and DeBERTa-large-MNLI (§6).
+* a **real-model pilot** on 60 PopQA questions (20 per popularity tier) with Qwen2.5-1.5B-Instruct, live Wikipedia retrieval and DeBERTa-large-MNLI (§6).
 
 **Headline findings (simulation, held-out test split).**
 
@@ -42,7 +42,17 @@ The dissertation proposes **UG-RAV**, a training-free pipeline that (i) estimate
 | Retrieval helps most for long-tail entities (Objective O4) | Retrieval fixes 50 % of low-popularity questions but only 4 % of popular ones, where it also hurts 3 % |
 | ΔSE adds little once evidence support is in the model | Removing ΔSE and SE_RAG leaves UG-RAV unchanged (AURAC 0.957); removing the evidence signals drops AURAC to 0.888 |
 
-The last finding is a substantive, falsifiable result for the dissertation: in this setting ΔSE is largely explained by evidence support and agreement. Section 6 tests whether the same holds for a real model.
+The last finding is a substantive, falsifiable result for the dissertation: in this setting ΔSE is largely explained by evidence support and agreement.
+
+**Headline findings (real-model pilot, §6; Qwen2.5-1.5B-Instruct, 60 PopQA questions).**
+
+| Finding | Evidence |
+|---|---|
+| Semantic entropy is a strong detector on a real model | AUROC **0.861** (0.751–0.949) for wrong closed-book answers; wrong answers have mean SE 1.89 and correct ones 0.90 |
+| ΔSE does not indicate a correct evidence-grounded answer | AUROC 0.467 for −ΔSE vs 0.803 for NLI evidence support. This replicates the simulation finding on real data |
+| Abstention is what cuts hallucinations when the model knows little | UG-RAV: 10.0 % hallucination rate at 23 % coverage, vs 76.7 % for never and always retrieving. However, it is not better than plain semantic-entropy abstention at equal coverage |
+| Fusion needs more data than a pilot provides | With 11 correct answers among 60, the 14-feature fused model (0.707) falls below semantic entropy alone. This motivates the planned 1,000-question study and a smaller, regularised feature set |
+| Retrieval quality decides when retrieval helps | The search-API retriever finds the gold page for 25 % of questions (5 % in the long tail). RAG accuracy is 58 % when the answer is retrieved and 0 % when it is not |
 
 ---
 
@@ -313,21 +323,141 @@ The largest weights are evidence support (−2.08: supported answers are safe) a
 
 ## 6. Results: real-model pilot
 
-<!-- REAL_RESULTS -->
-> **In progress.** The real-model pilot (Qwen2.5-1.5B-Instruct, PopQA, live Wikipedia retrieval, DeBERTa-large-MNLI, K = 10) is running; its per-question records are cached in `results/real/` and this section will be completed when the run finishes.
+The simulation shows that the pipeline exploits the phenomena it was built for. This section asks what happens
+with a real model, a real retriever and real questions. It is a **pilot**: a 1.5B-parameter model on a laptop
+CPU, 60 questions, and a deliberately simple retriever. Its job is to test the plumbing end to end and to show
+which conclusions survive contact with real data, not to replace the planned 7–8B study.
+
+### 6.1 Setup
+
+| Component | Pilot configuration |
+|---|---|
+| Questions | 60 PopQA questions, stratified 20 / 20 / 20 by subject popularity (monthly Wikipedia views < 300, < 10,000, ≥ 10,000), seed 2026; *occupation* and *genre* relations excluded (open-ended answers) |
+| Generator | Qwen2.5-1.5B-Instruct (Hugging Face Transformers, CPU, float32), greedy answer + **K = 10** samples at T = 1.0, closed-book and with evidence; a shared-prefill KV-cache sampler makes the 2 × 11 generations per question affordable on a CPU |
+| Retriever | Wikipedia search API on the question text; first 80 words of the lead section of the top-3 articles (cached in `data/real/wikipedia_passages.json`) |
+| NLI | `microsoft/deberta-large-mnli` for semantic clustering (relaxed bidirectional criterion) and evidence support |
+| Labels | Normalised alias containment against PopQA's answer lists, plus a manual audit of every answer a relaxed matcher flags (§6.6) |
+| Splits | Dev = odd question ids (30), test = even ids (30); fusion weights out-of-fold, thresholds tuned on dev |
+| Cost | 172 s per question on a 16-core laptop CPU (Intel Core Ultra 7 165H), about 3 h in total |
+
+Every number below is computed by `scripts/run_real_experiment.py` (→ `results/real/benchmark_popqa_qwen2.5-1.5b-instruct.json`) and `scripts/analyse_real_pilot.py` (→ `results/real/analysis_popqa_qwen2.5-1.5b-instruct.json`).
+
+### 6.2 The model and the retriever
+
+**Table 6 — Accuracy and retrieval quality by popularity tier.**
+
+| Tier | n | Closed-book acc. | RAG acc. | Retrieval helps | Retrieval hurts | Answer in passages | Gold page retrieved | Mean SE |
+|---|---|---|---|---|---|---|---|---|
+| High | 20 | 40.0 % | 45.0 % | 15.0 % | 10.0 % | 65.0 % | 45.0 % | 1.39 |
+| Mid | 20 | 5.0 % | 15.0 % | 15.0 % | 5.0 % | 40.0 % | 25.0 % | 1.99 |
+| Low | 20 | 10.0 % | 10.0 % | 10.0 % | 10.0 % | 15.0 % | 5.0 % | 1.75 |
+| **All** | 60 | **18.3 %** | **23.3 %** | 13.3 % | 8.3 % | 40.0 % | 25.0 % | 1.71 |
+
+![Real pilot by tier](figures/ugrav_real_tiers.png)
+
+*Figure 8. Closed-book and RAG accuracy, and how often the retriever found the answer, by popularity tier.*
+
+Two facts frame everything that follows.
+
+* **The model knows little.** Even for popular entities the 1.5B model answers only 40 % correctly, and long-tail accuracy is near zero. This is the regime where Mallen et al. (2023) expect retrieval to matter most.
+* **The retriever is the bottleneck.** Searching Wikipedia with the raw question finds the subject's page for only 25 % of questions (5 % in the low tier), because PopQA subjects are often ambiguous titles (*Roma*, *Ivan*, *Shadow*, *Time*). When the answer string is in the passages, RAG accuracy is 58.3 %. When it is not, RAG accuracy is 0 %. Retrieval therefore helps less here (+5 points overall) than in the simulation, where the gold passage was retrieved 86 % of the time.
+
+### 6.3 Detection (O1, O2)
+
+**Table 7 — Detecting wrong closed-book answers on the real model** (49 of 60 are wrong; AUROC with 500-sample bootstrap 95 % CI).
+
+| Signal | AUROC (95 % CI) | Simulation (Table 2) |
+|---|---|---|
+| 1 − greedy agreement | **0.866** (0.759–0.951) | 0.693 |
+| Semantic entropy (weighted) | 0.863 (0.740–0.953) | 0.687 |
+| **Semantic entropy** | **0.861** (0.751–0.949) | 0.696 |
+| 1 − self-consistency | 0.856 (0.743–0.947) | 0.692 |
+| Min-token surprisal (FLARE) | 0.840 (0.719–0.938) | 0.786 |
+| Predictive entropy | 0.837 (0.725–0.942) | 0.696 |
+| Lexical entropy | 0.818 (0.653–0.939) | 0.602 |
+| 1 − P(True) | 0.807 (0.688–0.910) | 0.680 |
+| Length-normalised PE | 0.787 (0.594–0.936) | 0.590 |
+| Fused: closed-book only ($\hat r_0$) | 0.783 (0.629–0.907) | 0.769 |
+| 1 − evidence support of $a_0$ | 0.766 (0.606–0.896) | 0.858 |
+| Fused: uncertainty + evidence | 0.707 (0.554–0.867) | 0.921 |
+
+![Detection AUROC, real pilot](figures/ugrav_real_detection_auroc.png)
+
+*Figure 9. AUROC of every signal on the real pilot.*
+
+What transfers, and what does not:
+
+1. **Sampling-based uncertainty works well on a real model.** Semantic entropy reaches AUROC 0.861. Wrong answers have mean SE 1.89 and correct ones 0.90. A small model that does not know a long-tail fact mostly *confabulates*, with different answers on every sample, which is exactly what semantic entropy is designed to catch.
+2. **Meaning beats strings again, but by less.** Semantic entropy is ahead of lexical entropy (0.861 vs 0.818), but the CIs overlap. Short PopQA answers have few paraphrases, so clustering matters less than in the simulator's templated answers.
+3. **Confident errors are rarer than in the simulation.** Only 4 of 49 wrong answers (8.2 %) have SE ≤ 0.5. The benchmark's relative definition (SE below the median) counts 26 (53 %), but most of those still have substantial entropy. One example is "What is the religion of Kenneth Steiner?" → *Christianity* (SE = 0, wrong). The simulation's 32 % confident-error share is therefore not representative of this model. A larger model that knows more facts is expected to make more confident errors (Farquhar et al., 2024), which is the case the 7–8B study must test.
+4. **Evidence support is a real but weaker signal (0.766),** limited by the retriever: when the right page is not retrieved, NLI support is uninformative about the closed-book answer.
+5. **The fused detectors do not beat semantic entropy here.** Logistic fusion over 6 (closed) or 14 (full) features is fitted out-of-fold on about 48 questions with only 11 correct answers. That is too little data to estimate 14 weights, and the fused-with-evidence model (0.707) is worse than its best single input. This is a sample-size failure, not evidence against fusion. The progress report's plan of 1,000 questions per dataset gives about 17 times more data. Until then, a fusion model with **fewer features** (SE, support, contradiction) or **strong regularisation** is the safer choice.
+
+### 6.4 Does ΔSE carry information?
+
+The pilot gives the first real-model test of the dissertation's novel signal. After retrieval, semantic entropy falls on average (mean ΔSE +1.14 when the RAG answer is right, +1.39 when it is wrong). However, **ΔSE does not separate right from wrong RAG answers**: AUROC(−ΔSE → RAG error) = 0.467. By comparison, the post-retrieval entropy itself scores 0.711 and NLI support of the RAG answer scores 0.803. Evidence makes the model more consistent whether or not the evidence is right, so a drop in uncertainty is not a sign of correctness. This replicates the simulation finding (§5.4) on real data: in both settings **evidence support, not ΔSE, carries the post-retrieval signal**. The dissertation should report ΔSE as an analysed hypothesis with a negative result, not as a contributing feature.
+
+### 6.5 Policies (O3) and popularity (O4)
+
+**Table 8 — Policies on the real pilot's test split (30 questions).** τ_low = 0.50, τ_high = 0.60 and θ_sup = 0 were tuned on the 30 dev questions.
+
+| Policy | Coverage | Accuracy (all) | Selective accuracy | Hallucination rate | Retrieval rate | AURAC |
+|---|---|---|---|---|---|---|
+| Never retrieve | 1.000 | 0.233 | 0.233 | 0.767 | 0.000 | 0.476 |
+| Always retrieve | 1.000 | 0.233 | 0.233 | 0.767 | 1.000 | 0.244 |
+| SC abstention | 0.433 | 0.200 | 0.462 | 0.233 | 0.000 | 0.494 |
+| FLARE-style gate | 1.000 | 0.267 | 0.267 | 0.733 | 0.867 | 0.276 |
+| SE gate, no verification | 1.000 | 0.233 | 0.233 | 0.767 | 1.000 | 0.244 |
+| **UG-RAV** | 0.233 | 0.133 | **0.571** | **0.100** | 0.900 | 0.327 |
+| UG-RAV without ΔSE / SE_RAG | 0.200 | 0.100 | 0.500 | 0.100 | 0.900 | 0.304 |
+| UG-RAV without evidence signals | 0.267 | 0.133 | 0.500 | 0.133 | 1.000 | 0.317 |
+| Oracle | 0.367 | 0.367 | 1.000 | 0.000 | 0.133 | 0.724 |
+
+![Risk–coverage, real pilot](figures/ugrav_real_risk_coverage.png)
+
+*Figure 10. Selective risk vs coverage on the real pilot's test split.*
+
+* **Abstention is what reduces hallucinations when the model knows little.** Without abstention every policy hallucinates on 73–77 % of questions. Retrieval alone cannot fix this when the retriever finds the answer only 40 % of the time. UG-RAV lowers the hallucination rate to **10.0 %** with the best selective accuracy (57.1 %) by answering only the 23 % of questions it can support. The oracle shows that only 37 % of these test questions are answerable by either route, so heavy abstention is the correct behaviour, not over-caution.
+* **But the risk ranking is not yet better than plain semantic entropy.** UG-RAV's AURAC (0.327) is below that of closed-book SE ranking (never retrieve, 0.476) and self-consistency abstention (0.494). This follows directly from §6.3: the fused risk is noisier than semantic entropy at this sample size. At UG-RAV's coverage, abstaining on closed-book SE alone gives a similar error rate (Figure 10), so the pilot does **not** show an advantage of evidence-gated answering over uncertainty-based abstention.
+* **Gate budget.** At a 40 % retrieval budget, gating by semantic entropy gives the highest accuracy (0.333, against 0.267 for the fused gate and 0.233 for a random gate). With 30 test questions, a single question is 3.3 points, so these differences are within noise.
+* **Popularity (O4).** Retrieval helps in every tier (10–15 % of questions) but hurts nearly as often in the high and low tiers (10 %). Popular subjects benefit most, because their pages are actually found. In the simulation, by contrast, the long tail benefited most. The difference comes from the retriever (Table 6), not the model: retrieval quality decides when retrieval helps.
+
+### 6.6 Label audit
+
+Correctness is decided by alias containment. A relaxed matcher (token F1 ≥ 0.5 or a shared content word with any alias) flagged 7 answers labelled wrong, and all 7 were adjudicated by hand (`results/real/label_audit_popqa_qwen2.5-1.5b-instruct.json`). Three labels change: *Christian* for *Christianity* (closed-book and RAG), and *Frederick Schomberg* for *Frederick Schomberg, 1st Duke of Schomberg*. The other four flags are different people or places and remain wrong. With the audited labels:
+
+* closed-book accuracy is 20.0 % (instead of 18.3 %);
+* RAG accuracy is 26.7 % (instead of 23.3 %);
+* the semantic-entropy AUROC is 0.883 and the evidence-support AUROC is 0.792.
+
+Every conclusion above is unchanged. The audit confirms the source document's concern (report 01): alias containment slightly *under*-states accuracy, so a manual check of a sample of labels is needed in the full study.
+
+### 6.7 What the pilot changes in the dissertation plan
+
+| Simulation claim | Pilot verdict | Consequence for the full study |
+|---|---|---|
+| Semantic entropy detects errors better than string-level uncertainty | **Supported** (0.861 vs 0.818), with overlapping CIs | Keep as O1's main finding; the full study's sample size will narrow the CIs |
+| Uncertainty misses confident errors; evidence catches them | **Not testable here.** Only 8 % of errors are confident for a 1.5B model | Test on 7–8B models, which know more facts and make more confident errors |
+| Fusing uncertainty and evidence beats either alone | **Not supported** at N = 60 (fusion overfits) | Regularise, reduce the feature set, report learning curves |
+| ΔSE adds information | **Not supported** (AUROC 0.467) | Report as a negative result; keep evidence support |
+| Gating + verification + abstention lowers hallucinations | **Supported** for abstention (76.7 % → 10.0 %); not better than SE abstention at equal coverage | Compare at matched coverage, as in Figure 10 |
+| Retrieval helps the long tail most | **Depends on the retriever** | Use the DPR Wikipedia index with BM25 + dense retrieval, as planned, not the search API |
 
 ---
 
 ## 7. Discussion and limitations
 
-**What the evidence supports.** Within its scope the implementation confirms the three design hypotheses of the dissertation: (1) semantic entropy is a better uncertainty signal than string-level measures; (2) uncertainty and evidence are complementary — evidence verification catches the confident errors that uncertainty cannot see; (3) gating, verification and abstention together reduce hallucinations more than adaptive retrieval without verification, at a fraction of the retrieval cost.
+**What the evidence supports.** The simulation confirms that the implementation exploits the three design hypotheses as intended. First, semantic entropy is a better uncertainty signal than string-level measures. Second, evidence verification catches the confident errors that uncertainty cannot see. Third, gating, verification and abstention together reduce hallucinations more than adaptive retrieval without verification, at a fraction of the retrieval cost.
+
+The real-model pilot supports the first hypothesis and the value of abstention. It also produces two clear negative results that strengthen the dissertation: ΔSE carries no signal beyond evidence support, and multi-feature fusion needs more data than 60 questions. The pilot cannot test the confident-error hypothesis, because a 1.5B model rarely makes confident errors, and its gains from retrieval are capped by a weak retriever. Both points define what the full 7–8B study must show.
 
 **Threats to validity.**
 
 * *Simulation.* The simulator encodes the phenomena by construction; its results show that the pipeline exploits them correctly and quantify the trade-offs, not that real models behave identically. In particular, token-level signals are favoured (§5.1).
 * *Lexical NLI.* The simulation uses `LexicalNLI`, which is deterministic and fast but weaker than DeBERTa on paraphrase; the real pilot uses DeBERTa-large-MNLI.
-* *Scale.* The real pilot uses a 1.5B model on a CPU with 90 questions; confidence intervals are wide. The 7–8B, 3 × 1,000-question study of the progress report remains the target; `notebooks/ugrav_kaggle_gpu.ipynb` runs it on a Kaggle GPU unchanged.
-* *Labels.* Correctness uses alias containment; PopQA alias lists are incomplete, so some correct answers are scored wrong. The progress report's plan to check about 200 labels by hand is the right mitigation.
+* *Scale.* The real pilot uses a 1.5B model on a CPU with 60 questions; confidence intervals are wide. The 7–8B, 3 × 1,000-question study of the progress report remains the target; `notebooks/ugrav_kaggle_gpu.ipynb` runs it on a Kaggle GPU unchanged.
+* *Labels.* Correctness uses alias containment; PopQA alias lists are incomplete, so some correct answers are scored wrong. The manual audit in §6.6 changed 3 of 120 pilot labels and none of the conclusions; the progress report's plan to check about 200 labels by hand remains the right mitigation for the full study.
+* *Pilot sample size.* With 30 test questions, one question moves a policy metric by 3.3 points; the pilot's policy comparisons (§6.5) are indicative only.
 * *Retrieval cost.* The utility uses $c = 0.05$ per retrieval; the risk–coverage curves and the budget table make the conclusions independent of that choice.
 
 ---
@@ -338,7 +468,8 @@ The largest weights are evidence support (−2.08: supported answers are safe) a
 pip install -e ".[app,data,dev]"          # offline components
 halludetect bench-ugrav --seeds 5         # §5: simulation (≈ 30 s), writes results/ugrav/
 pip install -e ".[ml]"                    # torch + transformers
-python scripts/run_real_experiment.py --n 90 --k 10 --threads 12   # §6: real pilot (CPU, ≈ 1–2 h)
+python scripts/run_real_experiment.py --n 60 --k 10 --threads 12   # §6: real pilot (CPU, ≈ 3 h)
+python scripts/analyse_real_pilot.py      # §6.2–6.6: tiers, ΔSE, confident errors, label audit
 python scripts/make_figures.py            # figures in reports/figures/
 pytest -q                                 # unit and integration tests
 ```

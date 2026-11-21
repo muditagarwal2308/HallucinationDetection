@@ -223,6 +223,50 @@ def vghd_figures(res: dict, tag: str, title: str) -> None:
         save(fig, f"vghd_{tag}_repair.png")
 
 
+def real_pilot_tier_figure(analysis: dict, model: str) -> None:
+    """Closed-book vs RAG accuracy and retrieval quality per popularity tier (O4 on a real model)."""
+    tiers = [t for t in ("high", "mid", "low") if t in analysis["by_tier"]]
+    d = analysis["by_tier"]
+    fig, ax = plt.subplots(figsize=(7.6, 3.6))
+    x = np.arange(len(tiers))
+    w = 0.2
+    series = [("closed_accuracy", "Closed-book accuracy", INDIGO), ("rag_accuracy", "RAG accuracy", TEAL),
+              ("answer_in_passages", "Answer in retrieved passages", SAFFRON),
+              ("gold_page_retrieved", "Gold Wikipedia page retrieved", GREY)]
+    for i, (k, label, c) in enumerate(series):
+        vals = [d[t][k] for t in tiers]
+        bars = ax.bar(x + (i - 1.5) * w, vals, w, color=c, label=label)
+        ax.bar_label(bars, [f"{v:.0%}" for v in vals], fontsize=7, padding=1)
+    ax.set_xticks(x, [f"{t} popularity\n(n = {d[t]['n']})" for t in tiers])
+    ax.set_ylim(0, 1.05)
+    ax.set_ylabel("Share of questions")
+    ax.legend(frameon=False, fontsize=8, ncol=2, loc="upper right")
+    ax.set_title(f"Real pilot by popularity tier — {model}, PopQA")
+    save(fig, "ugrav_real_tiers.png")
+
+
+def vghd_nli_comparison_figure(lex: dict, deb: dict) -> None:
+    """Same detectors and test split, two NLI back-ends."""
+    order = ["citation_existence", "answer_level_nli", "vghd"]
+    metrics = [("auroc", "AUROC"), ("f1", "F1"), ("false_positive_rate", "False-positive rate")]
+    fig, axes = plt.subplots(1, 3, figsize=(11.5, 3.6), sharey=True)
+    for ax, (m, label) in zip(axes, metrics):
+        x = np.arange(len(order))
+        a = [lex["detectors"][k][m] for k in order]
+        b = [deb["detectors"][k][m] for k in order]
+        b1 = ax.bar(x - 0.2, a, 0.38, color=SAFFRON, label="Lexical NLI (refined on the test set)")
+        b2 = ax.bar(x + 0.2, b, 0.38, color=INDIGO, label="DeBERTa-large-MNLI (off the shelf)")
+        ax.bar_label(b1, [f"{v:.2f}" for v in a], fontsize=6.5, padding=1)
+        ax.bar_label(b2, [f"{v:.2f}" for v in b], fontsize=6.5, padding=1)
+        ax.set_xticks(x, ["Citation\nexistence", "Answer-level\nNLI", "VGHD"], fontsize=8)
+        ax.set_title(label)
+        ax.set_ylim(0, 1.12)
+    handles, labels = axes[0].get_legend_handles_labels()
+    fig.legend(handles, labels, frameon=False, fontsize=8, loc="lower center", ncol=2, bbox_to_anchor=(0.5, -0.06))
+    fig.suptitle("VGHD with two NLI back-ends — held-out test split", fontweight="bold", fontsize=11)
+    save(fig, "vghd_nli_comparison.png")
+
+
 def main() -> None:
     sim = load(RES / "ugrav" / "benchmark_sim-7b.json")
     if sim:
@@ -232,12 +276,19 @@ def main() -> None:
         real = load(Path(path))
         model = Path(path).stem.replace("benchmark_popqa_", "")
         ugrav_figures(real, "real", f"real model ({model}, PopQA)")
+        analysis = load(RES / "real" / f"analysis_popqa_{model}.json")
+        if analysis:
+            real_pilot_tier_figure(analysis, model)
     for path, tag, title in ((RES / "gita" / "benchmark_lexical.json", "lexical", "lexical NLI"),
                              (RES / "gita" / "benchmark_microsoft_deberta_large_mnli.json", "deberta",
                               "DeBERTa-large-MNLI")):
         r = load(path)
         if r:
             vghd_figures(r, tag, title)
+    lex = load(RES / "gita" / "benchmark_lexical.json")
+    deb = load(RES / "gita" / "benchmark_microsoft_deberta_large_mnli.json")
+    if lex and deb:
+        vghd_nli_comparison_figure(lex, deb)
 
 
 if __name__ == "__main__":

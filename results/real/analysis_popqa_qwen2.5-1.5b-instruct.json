@@ -1,0 +1,529 @@
+{
+  "n": 60,
+  "tag": "popqa_qwen2.5-1.5b-instruct",
+  "k": 10,
+  "mean_seconds_per_question": 172.14663333333328,
+  "relations": {
+    "screenwriter": 11,
+    "author": 7,
+    "producer": 6,
+    "composer": 6,
+    "country": 5,
+    "director": 5,
+    "capital": 5,
+    "father": 4,
+    "capital of": 4,
+    "sport": 2,
+    "religion": 2,
+    "mother": 1,
+    "place of birth": 1,
+    "color": 1
+  },
+  "by_tier": {
+    "high": {
+      "n": 20,
+      "closed_accuracy": 0.4,
+      "rag_accuracy": 0.45,
+      "retrieval_helps": 0.15,
+      "retrieval_hurts": 0.1,
+      "answer_in_passages": 0.65,
+      "gold_page_retrieved": 0.45,
+      "mean_se": 1.3937465553977673
+    },
+    "mid": {
+      "n": 20,
+      "closed_accuracy": 0.05,
+      "rag_accuracy": 0.15,
+      "retrieval_helps": 0.15,
+      "retrieval_hurts": 0.05,
+      "answer_in_passages": 0.4,
+      "gold_page_retrieved": 0.25,
+      "mean_se": 1.9897516113912015
+    },
+    "low": {
+      "n": 20,
+      "closed_accuracy": 0.1,
+      "rag_accuracy": 0.1,
+      "retrieval_helps": 0.1,
+      "retrieval_hurts": 0.1,
+      "answer_in_passages": 0.15,
+      "gold_page_retrieved": 0.05,
+      "mean_se": 1.7500349148940404
+    }
+  },
+  "overall": {
+    "closed_accuracy": 0.18333333333333332,
+    "rag_accuracy": 0.23333333333333334,
+    "retrieval_helps": 0.13333333333333333,
+    "retrieval_hurts": 0.08333333333333333,
+    "answer_in_passages": 0.4,
+    "gold_page_retrieved": 0.25,
+    "rag_accuracy_when_answer_in_passages": 0.5833333333333334,
+    "rag_accuracy_when_answer_not_in_passages": 0.0
+  },
+  "uncertainty": {
+    "mean_se_correct": 0.9010036933274744,
+    "mean_se_wrong": 1.8930534899399583,
+    "share_wrong_with_low_se": 0.08163265306122448,
+    "n_wrong": 49,
+    "n_confident_errors": 4,
+    "auroc_se_closed": 0.8608534322820037,
+    "auroc_se_closed_ci": [
+      0.7508680555555556,
+      0.9485389610389611
+    ],
+    "auroc_one_minus_sc_closed": 0.8562152133580705,
+    "auroc_one_minus_support_closed": 0.7662337662337663,
+    "auroc_one_minus_support_closed_ci": [
+      0.6063710016835017,
+      0.8957813428401663
+    ]
+  },
+  "delta_se": {
+    "mean_delta_se_rag_correct": 1.1362147062085133,
+    "mean_delta_se_rag_wrong": 1.3875337819708606,
+    "auroc_neg_delta_se_for_rag_error": 0.4673913043478261,
+    "auroc_se_rag_for_rag_error": 0.7111801242236024,
+    "auroc_one_minus_support_rag_for_rag_error": 0.8027950310559007
+  },
+  "cases": {
+    "retrieval_fixed": [
+      {
+        "id": "pq2339625",
+        "question": "In what country is Nakina railway station?",
+        "tier": "low",
+        "gold": [
+          "Canada",
+          "Dominion of Canada",
+          "British North America"
+        ],
+        "closed": "Kenya",
+        "closed_correct": false,
+        "se": -0.0,
+        "rag": "Canada",
+        "rag_correct": true,
+        "support": 0.19,
+        "delta_se": 0.0
+      },
+      {
+        "id": "pq2655279",
+        "question": "Who is the mother of Maud of Normandy?",
+        "tier": "mid",
+        "gold": [
+          "Gunnora",
+          "Gunnor"
+        ],
+        "closed": "Matilda",
+        "closed_correct": false,
+        "se": 1.75,
+        "rag": "Gunnor",
+        "rag_correct": true,
+        "support": 0.8,
+        "delta_se": 1.75
+      },
+      {
+        "id": "pq5852020",
+        "question": "Who is the author of Gin Tama?",
+        "tier": "high",
+        "gold": [
+          "Hideaki Sorachi"
+        ],
+        "closed": "Masahiro Hara",
+        "closed_correct": false,
+        "se": 2.3,
+        "rag": "Hideaki Sorachi",
+        "rag_correct": true,
+        "support": 0.83,
+        "delta_se": 2.3
+      },
+      {
+        "id": "pq307051",
+        "question": "Who was the director of A Day in the Life?",
+        "tier": "mid",
+        "gold": [
+          "Sticky Fingaz",
+          "Trop",
+          "Kirk Jones"
+        ],
+        "closed": "Richard Lester",
+        "closed_correct": false,
+        "se": 1.75,
+        "rag": "Sticky Fingaz",
+        "rag_correct": true,
+        "support": 0.97,
+        "delta_se": 1.75
+      },
+      {
+        "id": "pq5183056",
+        "question": "What is the capital of Duchy of Amalfi?",
+        "tier": "mid",
+        "gold": [
+          "Amalfi"
+        ],
+        "closed": "Naples",
+        "closed_correct": false,
+        "se": 1.09,
+        "rag": "Amalfi",
+        "rag_correct": true,
+        "support": 0.1,
+        "delta_se": 1.09
+      },
+      {
+        "id": "pq2068848",
+        "question": "What is the capital of Cook Islands?",
+        "tier": "high",
+        "gold": [
+          "Avarua"
+        ],
+        "closed": "Papeete",
+        "closed_correct": false,
+        "se": 2.3,
+        "rag": "Avarua",
+        "rag_correct": true,
+        "support": 0.98,
+        "delta_se": 2.3
+      }
+    ],
+    "retrieval_hurt": [
+      {
+        "id": "pq152871",
+        "question": "In what country is Neau?",
+        "tier": "low",
+        "gold": [
+          "France",
+          "fr",
+          "FR"
+        ],
+        "closed": "France",
+        "closed_correct": true,
+        "se": 0.67,
+        "rag": "Belgium",
+        "rag_correct": false,
+        "support": 0.05,
+        "delta_se": 0.67
+      },
+      {
+        "id": "pq3979080",
+        "question": "What sport does Ebrahim Asadi play?",
+        "tier": "low",
+        "gold": [
+          "association football",
+          "football",
+          "soccer"
+        ],
+        "closed": "Football",
+        "closed_correct": true,
+        "se": 1.23,
+        "rag": "The passage does not mention Ebrahim Asadi or any sport he plays.",
+        "rag_correct": false,
+        "support": 0.01,
+        "delta_se": -0.24
+      },
+      {
+        "id": "pq6513436",
+        "question": "What is the capital of Burundi?",
+        "tier": "high",
+        "gold": [
+          "Bujumbura",
+          "Usumbura"
+        ],
+        "closed": "Bujumbura",
+        "closed_correct": true,
+        "se": 1.23,
+        "rag": "Gitega",
+        "rag_correct": false,
+        "support": 0.99,
+        "delta_se": 1.23
+      },
+      {
+        "id": "pq378940",
+        "question": "In what country is Paste?",
+        "tier": "mid",
+        "gold": [
+          "United States of America",
+          "the United States of America",
+          "America"
+        ],
+        "closed": "United States",
+        "closed_correct": true,
+        "se": 2.03,
+        "rag": "JustPaste.it",
+        "rag_correct": false,
+        "support": 0.04,
+        "delta_se": 0.28
+      },
+      {
+        "id": "pq4985526",
+        "question": "Who is the father of Dick Grayson?",
+        "tier": "high",
+        "gold": [
+          "Batman",
+          "Matches Malone",
+          "Sir Hemingford Grey"
+        ],
+        "closed": "Bruce Wayne",
+        "closed_correct": true,
+        "se": 1.09,
+        "rag": "Master acrobats dubbed the Flying Fox.",
+        "rag_correct": false,
+        "support": 0.1,
+        "delta_se": 0.59
+      }
+    ],
+    "confident_errors": [
+      {
+        "id": "pq2339625",
+        "question": "In what country is Nakina railway station?",
+        "tier": "low",
+        "gold": [
+          "Canada",
+          "Dominion of Canada",
+          "British North America"
+        ],
+        "closed": "Kenya",
+        "closed_correct": false,
+        "se": -0.0,
+        "rag": "Canada",
+        "rag_correct": true,
+        "support": 0.19,
+        "delta_se": 0.0
+      },
+      {
+        "id": "pq3812717",
+        "question": "What is Leningradskaya the capital of?",
+        "tier": "low",
+        "gold": [
+          "Leningradsky District"
+        ],
+        "closed": "Russia",
+        "closed_correct": false,
+        "se": -0.0,
+        "rag": "Gatchina",
+        "rag_correct": false,
+        "support": 0.83,
+        "delta_se": 0.0
+      },
+      {
+        "id": "pq55383",
+        "question": "What is the religion of Seventh-day Adventist Church?",
+        "tier": "high",
+        "gold": [
+          "Christianity",
+          "Christian faith"
+        ],
+        "closed": "Christian",
+        "closed_correct": false,
+        "se": 0.0,
+        "rag": "Christian",
+        "rag_correct": false,
+        "support": 0.92,
+        "delta_se": -0.33
+      },
+      {
+        "id": "pq2904733",
+        "question": "What is the religion of Kenneth Steiner?",
+        "tier": "low",
+        "gold": [
+          "Catholic Church",
+          "Roman Catholic Church",
+          "Church"
+        ],
+        "closed": "Christianity",
+        "closed_correct": false,
+        "se": 0.0,
+        "rag": "Kenneth Steiner is not mentioned in the given passages.",
+        "rag_correct": false,
+        "support": 0.02,
+        "delta_se": -1.42
+      }
+    ],
+    "both_wrong": [
+      {
+        "id": "pq3769862",
+        "question": "Who was the director of Colorado?",
+        "tier": "low",
+        "gold": [
+          "Joseph Kane",
+          "Jasper Joseph Inman Kane"
+        ],
+        "closed": "John Ford",
+        "closed_correct": false,
+        "se": 2.3,
+        "rag": "Jena Griswold",
+        "rag_correct": false,
+        "support": 0.04,
+        "delta_se": 1.02
+      },
+      {
+        "id": "pq5499216",
+        "question": "Who was the screenwriter for The Game?",
+        "tier": "low",
+        "gold": [
+          "Joey Murphy",
+          "John Pardee"
+        ],
+        "closed": "David S. Goyer",
+        "closed_correct": false,
+        "se": 2.3,
+        "rag": "Graham Moore",
+        "rag_correct": false,
+        "support": 0.96,
+        "delta_se": 2.3
+      },
+      {
+        "id": "pq2892102",
+        "question": "Who was the producer of Wall Street?",
+        "tier": "low",
+        "gold": [
+          "Harry Cohn"
+        ],
+        "closed": "James P. Hoffa",
+        "closed_correct": false,
+        "se": 2.16,
+        "rag": "Oliver Stone",
+        "rag_correct": false,
+        "support": 0.0,
+        "delta_se": 2.16
+      },
+      {
+        "id": "pq56515",
+        "question": "Who was the screenwriter for The Bench?",
+        "tier": "low",
+        "gold": [
+          "Per Fly",
+          "Per Fly Plejdrup"
+        ],
+        "closed": "Michael Hordern",
+        "closed_correct": false,
+        "se": 2.3,
+        "rag": "Charukesh Sekar",
+        "rag_correct": false,
+        "support": 0.06,
+        "delta_se": 1.69
+      },
+      {
+        "id": "pq4033357",
+        "question": "Who is the father of Emma Portman, Viscountess Portman?",
+        "tier": "low",
+        "gold": [
+          "Henry Lascelles, 2nd Earl of Harewood"
+        ],
+        "closed": "Christopher Portman",
+        "closed_correct": false,
+        "se": 2.03,
+        "rag": "Henry Addington",
+        "rag_correct": false,
+        "support": 0.01,
+        "delta_se": 2.03
+      },
+      {
+        "id": "pq5914747",
+        "question": "Who was the screenwriter for The Builder?",
+        "tier": "low",
+        "gold": [
+          "Rick Alverson"
+        ],
+        "closed": "David S. Goyer",
+        "closed_correct": false,
+        "se": 2.3,
+        "rag": "Charles Logue",
+        "rag_correct": false,
+        "support": 0.03,
+        "delta_se": 2.3
+      }
+    ]
+  },
+  "label_audit": {
+    "n_flagged": 7,
+    "n_adjudicated": 7,
+    "flagged": [
+      {
+        "key": "pq4033357:rag",
+        "question": "Who is the father of Emma Portman, Viscountess Portman?",
+        "answer": "Henry Addington",
+        "aliases": [
+          "Henry Lascelles, 2nd Earl of Harewood"
+        ],
+        "auto": false,
+        "audited": false
+      },
+      {
+        "key": "pq6311127:closed",
+        "question": "Who is the father of Meinhardt Schomberg, 3rd Duke of Schomberg?",
+        "answer": "Frederick, Prince of Wales",
+        "aliases": [
+          "Frederick Schomberg, 1st Duke of Schomberg"
+        ],
+        "auto": false,
+        "audited": false
+      },
+      {
+        "key": "pq6311127:rag",
+        "question": "Who is the father of Meinhardt Schomberg, 3rd Duke of Schomberg?",
+        "answer": "Frederick Schomberg",
+        "aliases": [
+          "Frederick Schomberg, 1st Duke of Schomberg"
+        ],
+        "auto": false,
+        "audited": true
+      },
+      {
+        "key": "pq2657850:closed",
+        "question": "In what city was Stone born?",
+        "answer": "New York City",
+        "aliases": [
+          "Paris",
+          "City of Light",
+          "Paris, France"
+        ],
+        "auto": false,
+        "audited": false
+      },
+      {
+        "key": "pq55383:closed",
+        "question": "What is the religion of Seventh-day Adventist Church?",
+        "answer": "Christian",
+        "aliases": [
+          "Christianity",
+          "Christian faith"
+        ],
+        "auto": false,
+        "audited": true
+      },
+      {
+        "key": "pq55383:rag",
+        "question": "What is the religion of Seventh-day Adventist Church?",
+        "answer": "Christian",
+        "aliases": [
+          "Christianity",
+          "Christian faith"
+        ],
+        "auto": false,
+        "audited": true
+      },
+      {
+        "key": "pq2886501:closed",
+        "question": "Who was the composer of Nerone?",
+        "answer": "Giovanni Battista Pergolesi",
+        "aliases": [
+          "Arturo Toscanini",
+          "Arrigo Boito",
+          "Tobia Gorrio",
+          "Arrigo Enrico Boito",
+          "Enrico Giuseppe Giovanni Boito",
+          "Vincenzo Tommasini"
+        ],
+        "auto": false,
+        "audited": false
+      }
+    ],
+    "audited": {
+      "closed_accuracy": 0.2,
+      "rag_accuracy": 0.26666666666666666,
+      "n_closed_labels_changed": 1,
+      "n_rag_labels_changed": 2,
+      "auroc_se_closed": 0.8828125,
+      "auroc_one_minus_support_closed": 0.7916666666666666
+    }
+  }
+}

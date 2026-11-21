@@ -286,8 +286,46 @@ These results confirm the proposal's central hypothesis.
 
 ### 6.5 Repair and abstention
 
-<!-- REPAIR_RESULTS -->
-> **In progress.** Repair and abstention outcomes will be refreshed after the final benchmark run (see `results/gita/benchmark_lexical.json` for the current numbers).
+Every test-split answer that VGHD flags goes through the repair-or-abstain policy (§4.6). Each repaired answer is
+**re-verified**, and it counts as fixed only if the verifier then finds no critical or major issue.
+
+**Table 6.5 — What the policy did with the 209 hallucinated test answers** (lexical NLI, `results/gita/benchmark_lexical.json`).
+
+| Hallucination type | n | Repaired and re-verified | Abstained | Repair failed | Missed (not detected) | **Resolved** |
+|---|---|---|---|---|---|---|
+| Fabricated citation | 39 | 37 | 2 | 0 | 0 | 37 (94.9 %) |
+| Misattributed citation | 39 | 39 | 0 | 0 | 0 | 39 (100 %) |
+| Misquotation | 39 | 38 | 0 | 0 | 1 | 38 (97.4 %) |
+| Wrong speaker | 39 | 39 | 0 | 0 | 0 | 39 (100 %) |
+| Unsupported claim | 39 | 39 | 0 | 0 | 0 | 39 (100 %) |
+| False premise accepted | 9 | 1 | 5 | 0 | 3 | 6 (66.7 %) |
+| Out-of-scope question answered | 5 | 0 | 5 | 0 | 0 | 5 (100 %) |
+| **All** | **209** | **193** | **12** | **0** | **4** | **203 (97.1 %)** |
+
+*Resolved* means the hallucination was either repaired into an answer that re-verifies as faithful, or turned
+into an abstention where abstention is the correct response (false premises and out-of-scope questions). The two
+abstentions on fabricated citations are counted as **not** resolved. The question was answerable, so declining is
+safe but over-cautious: VGHD found no verse that supports the claim well enough to re-cite it.
+
+![Repair outcomes](figures/vghd_lexical_repair.png)
+
+*Figure 4. Outcome of the repair-or-abstain policy per hallucination type (test split, lexical NLI).*
+
+Representative repairs (from `repair_examples`):
+
+| Type | Before | After |
+|---|---|---|
+| Fabricated citation | "… nor should one be attached to inaction (BG 2.90)." | "… (BG 2.47)." Chapter 2 has 72 verses; the claim is re-cited to the verse that entails it |
+| Misattributed citation | "… it is not slain when the body is slain (BG 2.51)." | "… (BG 2.20)." |
+| Misquotation | In the words of the text, "music with its gold; so let not the kingdom of" (BG 2.47). | The quotation is replaced by the verse's own words |
+| Wrong speaker | "Arjuna teaches that one's concern is with action alone …" | "Krishna teaches …" |
+| Unsupported claim | "… The Gita also teaches that a pilgrimage to Kashi washes away all sins (BG 2.47)." | The unsupported sentence is removed and the supported claim is kept |
+
+**Where it still fails.** One misquotation is too close to the verse to be detected (similarity above the 0.92
+threshold). Three false-premise questions are answered as if the premise were true, because the presupposed
+statement is entailed by *some* verse even though the attribution is wrong. One example is a question that puts
+Krishna's words in Arjuna's mouth, when the answer does not repeat the speaker. Premise analysis is the hardest
+check for a lexical model, as the ablation in §6.2 shows (removing it raises false alarms from 1.9 % to 17.0 %).
 
 ---
 

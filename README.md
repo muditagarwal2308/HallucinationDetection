@@ -25,6 +25,13 @@ supervisor **Dr. Raju Pal**) — and implements both research directions they pr
 | Report | [03 UG-RAV Technical Report](reports/03_UG-RAV_Technical_Report.md) | [04 VGHD Technical Report](reports/04_VGHD_Technical_Report.md) |
 
 <!-- KEY_RESULTS -->
+**Key results.** UG-RAV simulation, held-out test split (the simulator encodes the phenomena by design, so these
+numbers validate the pipeline): hallucination rate **6.9 %** vs 12.4 % for always-retrieve, fused-detector AUROC
+**0.921** vs 0.696 for semantic entropy. Real pilot (Qwen2.5-1.5B-Instruct, 60 PopQA questions): semantic entropy
+detects wrong answers with AUROC **0.861**, abstention cuts the hallucination rate from 76.7 % to **10.0 %**, and
+ΔSE adds no signal (AUROC 0.467). VGHD, synthetic Gita test set: F1 **0.988** with **1.9 %** false alarms vs
+0.726 / 49.1 % for answer-level NLI; **97 %** of hallucinated answers are repaired and re-verified, or correctly
+abstained.
 
 ---
 
@@ -67,6 +74,54 @@ Any OpenAI-compatible server works as the LLM back-end — e.g. [Ollama](https:/
 then `--llm qwen2.5:7b`), vLLM, LM Studio or OpenAI. Docker: `docker build -t halludetect . && docker run -p 8501:8501 halludetect`.
 
 ## The app
+
+### Running it, step by step
+
+**Requirements:** Python 3.10, 3.11 or 3.12 and git. No GPU, API key or model download is needed: the default
+back-ends (answer simulators and a lexical NLI) run offline on any laptop CPU.
+
+**Windows (PowerShell)**
+
+```powershell
+git clone https://github.com/muditagarwal2308/HallucinationDetection.git
+cd HallucinationDetection
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1      # if blocked: Set-ExecutionPolicy -Scope CurrentUser RemoteSigned
+pip install -e ".[app,data]"
+streamlit run app/Home.py
+```
+
+**macOS / Linux**
+
+```bash
+git clone https://github.com/muditagarwal2308/HallucinationDetection.git
+cd HallucinationDetection
+python3 -m venv .venv && source .venv/bin/activate
+pip install -e ".[app,data]"
+streamlit run app/Home.py
+```
+
+The browser opens **http://localhost:8501**; if it does not, open that address yourself. Use the left sidebar
+to switch pages and **Ctrl + C** in the terminal to stop the server. Next time, only activate the venv and run
+`streamlit run app/Home.py`.
+
+| Want to… | Do this |
+|---|---|
+| Use another port | `streamlit run app/Home.py --server.port 8600` |
+| Open it from another device on your network | `streamlit run app/Home.py --server.address 0.0.0.0`, then browse to `http://<your-ip>:8501` |
+| Run it in Docker | `docker build -t halludetect .` then `docker run -p 8501:8501 halludetect` |
+| Use the DeBERTa NLI model | `pip install -e ".[ml]"`, then choose **DeBERTa-large-MNLI** in a page's sidebar (≈ 1.6 GB download on first use) |
+| Use a real LLM | Install [Ollama](https://ollama.com), `ollama pull qwen2.5:7b`; in *UG-RAV Live* or *Gita RAG Assistant* choose **OpenAI-compatible server**, base URL `http://localhost:11434/v1`, model `qwen2.5:7b` |
+| Show it without a browser | `python scripts/run_demo.py --pause` (8 narrated terminal scenes) |
+| Check that everything works | `python scripts/e2e_check.py` (data, tests, CLI, demo, app server, artefacts) |
+| Present it | Follow the timed walkthrough in [docs/DEMO_SCRIPT.md](docs/DEMO_SCRIPT.md) |
+
+**Troubleshooting.** If you see `streamlit: command not found`, the venv is not active; run
+`python -m streamlit run app/Home.py`. If you see "Port 8501 is already in use", add `--server.port 8600`. If
+DeBERTa cannot be loaded (no `torch`, or no network), the page tells you so and falls back to the lexical NLI.
+Results pages read `results/*.json`; after re-running a benchmark, refresh the browser.
+
+### Pages
 
 `streamlit run app/Home.py` opens a multi-page studio:
 
@@ -148,6 +203,40 @@ trace["decision"]   # {'action': 'answer_from_evidence', 'answer': 'Munshi Premc
 ## Results at a glance
 
 <!-- RESULTS_GLANCE -->
+**UG-RAV, simulation** (985 question instances; policies on the 490-instance test split; `results/ugrav/benchmark_sim-7b.json`)
+
+| Policy | Coverage | Selective accuracy | Hallucination rate | Retrieval rate |
+|---|---|---|---|---|
+| Never retrieve | 100 % | 69.4 % | 30.6 % | 0 % |
+| Always retrieve (vanilla RAG) | 100 % | 87.6 % | 12.4 % | 100 % |
+| SE gate, no verification | 100 % | 85.3 % | 14.7 % | 62 % |
+| **UG-RAV** | 87.3 % | **92.1 %** | **6.9 %** | 62 % |
+
+**UG-RAV, real-model pilot** (Qwen2.5-1.5B-Instruct on CPU, 60 PopQA questions, Wikipedia retrieval, DeBERTa-large-MNLI; `results/real/`)
+
+| Finding | Number |
+|---|---|
+| Closed-book / RAG accuracy | 18.3 % / 23.3 % (manual label audit: 20.0 % / 26.7 %) |
+| AUROC for wrong answers: semantic entropy · evidence support · fused | **0.861** · 0.766 · 0.707 (fusion overfits at N = 60) |
+| ΔSE as a signal of a correct RAG answer | AUROC 0.467: a negative result, as in the simulation |
+| Hallucination rate: never or always retrieve → UG-RAV | 76.7 % → **10.0 %** at 23 % coverage (on par with semantic-entropy abstention at equal coverage) |
+
+**VGHD** (262-answer test split, 209 hallucinated; lexical NLI; `results/gita/benchmark_lexical.json`)
+
+| Detector | AUROC | F1 | False alarms on correct answers |
+|---|---|---|---|
+| Citation-existence check | 0.579 | 0.325 | 3.8 % |
+| Answer-level NLI (RAGAS-style) | 0.616 | 0.726 | 49.1 % |
+| **VGHD** | **0.991** | **0.988** | **1.9 %** |
+| VGHD without the speaker check | 0.895 | 0.883 | 1.9 % |
+| VGHD without the premise check | 0.876 | 0.969 | 17.0 % |
+
+Repair or abstain: 193 of the 209 hallucinations are repaired and re-verified, 10 more are correctly abstained,
+for **97.1 %** resolved. Retrieval: hit@1 0.564 and recall@5 0.808 overall; recall@5 1.000 for Hindi questions.
+
+> Honesty notes: the simulator encodes the phenomena by construction; the Gita test set is built by perturbing
+> reference answers, and the lexical NLI was refined on it, so its scores are optimistic. Full caveats are in
+> reports 03 §7 and 04 §7.
 
 ## Repository layout
 

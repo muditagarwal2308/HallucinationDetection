@@ -1,0 +1,10 @@
+{
+  "_note": "Manual adjudication of the answers flagged by the relaxed matcher in scripts/analyse_real_pilot.py. true = the answer is correct although alias containment marked it wrong; false = the automatic label (wrong) is confirmed.",
+  "pq4033357:rag": false,
+  "pq6311127:closed": false,
+  "pq6311127:rag": true,
+  "pq2657850:closed": false,
+  "pq55383:closed": true,
+  "pq55383:rag": true,
+  "pq2886501:closed": false
+}
